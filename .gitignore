@@ -1,0 +1,17 @@
+# Swift Package Manager
+.build/
+Packages/
+Package.resolved
+*.xcodeproj/
+
+# macOS
+.DS_Store
+
+# Xcode
+*.xcworkspace/
+DerivedData/
+*.hmap
+*.ipa
+
+# SwiftUI Previews
+.swiftpm/
