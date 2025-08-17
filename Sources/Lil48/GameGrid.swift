@@ -72,19 +72,18 @@ struct GameGrid {
     
     mutating func move(direction: MovementDirection) -> Bool {
         var hasMovement = false
-        let newTiles = Array(repeating: Array(repeating: nil as GameCharacter?, count: columns), count: rows)
-        var resultTiles = newTiles
+        var resultTiles = tiles
         
-        for row in 0..<rows {
-            for column in 0..<columns {
-                if let character = tiles[row][column] {
-                    let currentPos = GridPosition(row: row, column: column)
-                    let newPos = slidePosition(from: currentPos, direction: direction)
-                    
-                    if newPos.row != currentPos.row || newPos.column != currentPos.column {
-                        hasMovement = true
-                    }
-                    
+        let positions = getAllPositions()
+        let sortedPositions = sortPositionsForDirection(positions, direction: direction)
+        
+        for position in sortedPositions {
+            if let character = tiles[position.row][position.column] {
+                let newPos = slidePosition(from: position, direction: direction, in: resultTiles)
+                
+                if newPos.row != position.row || newPos.column != position.column {
+                    hasMovement = true
+                    resultTiles[position.row][position.column] = nil
                     resultTiles[newPos.row][newPos.column] = character
                 }
             }
@@ -97,19 +96,66 @@ struct GameGrid {
         return hasMovement
     }
     
-    private func slidePosition(from position: GridPosition, direction: MovementDirection) -> GridPosition {
+    private func getAllPositions() -> [GridPosition] {
+        var positions: [GridPosition] = []
+        for row in 0..<rows {
+            for column in 0..<columns {
+                positions.append(GridPosition(row: row, column: column))
+            }
+        }
+        return positions
+    }
+    
+    private func sortPositionsForDirection(_ positions: [GridPosition], direction: MovementDirection) -> [GridPosition] {
+        switch direction {
+        case .right:
+            return positions.sorted { $0.column > $1.column }
+        case .left:
+            return positions.sorted { $0.column < $1.column }
+        case .down:
+            return positions.sorted { $0.row > $1.row }
+        case .up:
+            return positions.sorted { $0.row < $1.row }
+        }
+    }
+    
+    private func slidePosition(from position: GridPosition, direction: MovementDirection, in grid: [[GameCharacter?]]) -> GridPosition {
         var newRow = position.row
         var newColumn = position.column
         
         switch direction {
         case .right:
-            newColumn = columns - 1
+            for col in (position.column + 1)..<columns {
+                if grid[position.row][col] == nil {
+                    newColumn = col
+                } else {
+                    break
+                }
+            }
         case .left:
-            newColumn = 0
-        case .up:
-            newRow = 0
+            for col in (0..<position.column).reversed() {
+                if grid[position.row][col] == nil {
+                    newColumn = col
+                } else {
+                    break
+                }
+            }
         case .down:
-            newRow = rows - 1
+            for row in (position.row + 1)..<rows {
+                if grid[row][position.column] == nil {
+                    newRow = row
+                } else {
+                    break
+                }
+            }
+        case .up:
+            for row in (0..<position.row).reversed() {
+                if grid[row][position.column] == nil {
+                    newRow = row
+                } else {
+                    break
+                }
+            }
         }
         
         return GridPosition(row: newRow, column: newColumn)

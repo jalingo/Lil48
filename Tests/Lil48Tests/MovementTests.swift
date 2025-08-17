@@ -67,4 +67,17 @@ struct MovementTests {
         #expect(resultUp == false)
         #expect(resultDown == false)
     }
+    
+    @Test("Character blocked by another character stops before collision")
+    func characterBlockedByAnother_movesRight_stopsBeforeCollision() throws {
+        var grid = GameGrid()
+        try grid.place(.coolKittyKate, at: GridPosition(row: 0, column: 0))
+        try grid.place(.bullyBob, at: GridPosition(row: 0, column: 1))
+        
+        let result = grid.move(direction: .right)
+        
+        #expect(result == false)
+        #expect(try grid.character(at: GridPosition(row: 0, column: 0)) == .coolKittyKate)
+        #expect(try grid.character(at: GridPosition(row: 0, column: 1)) == .bullyBob)
+    }
 }
