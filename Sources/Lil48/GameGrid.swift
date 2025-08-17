@@ -56,6 +56,11 @@ struct GameGrid {
         return tiles[position.row][position.column]
     }
     
+    mutating func removeCharacter(at position: GridPosition) throws {
+        guard isValidPosition(position) else { throw GridError.positionOutOfBounds }
+        tiles[position.row][position.column] = nil
+    }
+    
     func canMove(from position: GridPosition, in direction: MovementDirection) -> Bool {
         switch direction {
         case .up: position.row > 0

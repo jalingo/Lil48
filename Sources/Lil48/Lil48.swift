@@ -2,6 +2,7 @@
 // Character-based puzzle game with dynamic grid expansion
 
 import Foundation
+import SwiftUI
 
 /// Main entry point for the Lil48 game library
 public struct Lil48 {
@@ -12,3 +13,7 @@ public struct Lil48 {
     /// Initialize the Lil48 game library
     public init() {}
 }
+
+// Export main components for easy access
+public typealias Game = GameView
+public typealias ViewModel = GameGridViewModel

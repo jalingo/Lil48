@@ -1,10 +1,9 @@
-import SwiftUI
+import Foundation
 import Lil48
-@main
-struct Lil48App: App {
-    var body: some Scene {
-        WindowGroup {
-            ContentView()
-        }
-    }
-}
+
+// Console demo for Lil48 game
+print("Lil48 Console Demo")
+print("==================")
+
+// Run the demo function from the library
+GridDemo.run()
