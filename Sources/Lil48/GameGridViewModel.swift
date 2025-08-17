@@ -119,4 +119,9 @@ public class GameGridViewModel {
             }
         }
     }
+    
+    /// 9. moveCharacters(direction:) method - executes movement in specified direction
+    public func moveCharacters(direction: MovementDirection) -> Bool {
+        gameGrid.move(direction: direction)
+    }
 }

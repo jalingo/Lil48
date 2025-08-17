@@ -27,6 +27,12 @@ public struct GameView: View {
                 .padding()
                 .background(Color.gray.opacity(0.1))
                 .cornerRadius(8)
+                .gesture(
+                    DragGesture(minimumDistance: 50)
+                        .onEnded { value in
+                            handleSwipe(value)
+                        }
+                )
                 
                 // Game Info
                 VStack(alignment: .leading, spacing: 8) {
@@ -89,6 +95,25 @@ public struct GameView: View {
         // Place some demo characters
         viewModel.placeCharacter(.coolKittyKate, at: 0, column: 0)
         viewModel.placeCharacter(.bullyBob, at: 1, column: 1)
+    }
+    
+    private func handleSwipe(_ value: DragGesture.Value) {
+        let horizontalMovement = value.translation.width
+        let verticalMovement = value.translation.height
+        
+        if abs(horizontalMovement) > abs(verticalMovement) {
+            if horizontalMovement > 0 {
+                _ = viewModel.moveCharacters(direction: .right)
+            } else {
+                _ = viewModel.moveCharacters(direction: .left)
+            }
+        } else {
+            if verticalMovement > 0 {
+                _ = viewModel.moveCharacters(direction: .down)
+            } else {
+                _ = viewModel.moveCharacters(direction: .up)
+            }
+        }
     }
 }
 

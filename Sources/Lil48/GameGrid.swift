@@ -18,7 +18,7 @@ public enum GameCharacter {
     case superCoolKittyKate
 }
 
-enum MovementDirection {
+public enum MovementDirection {
     case up, down, left, right
 }
 
@@ -68,5 +68,50 @@ struct GameGrid {
         case .left: position.column > 0
         case .right: position.column < columns - 1
         }
+    }
+    
+    mutating func move(direction: MovementDirection) -> Bool {
+        var hasMovement = false
+        let newTiles = Array(repeating: Array(repeating: nil as GameCharacter?, count: columns), count: rows)
+        var resultTiles = newTiles
+        
+        for row in 0..<rows {
+            for column in 0..<columns {
+                if let character = tiles[row][column] {
+                    let currentPos = GridPosition(row: row, column: column)
+                    let newPos = slidePosition(from: currentPos, direction: direction)
+                    
+                    if newPos.row != currentPos.row || newPos.column != currentPos.column {
+                        hasMovement = true
+                    }
+                    
+                    resultTiles[newPos.row][newPos.column] = character
+                }
+            }
+        }
+        
+        if hasMovement {
+            tiles = resultTiles
+        }
+        
+        return hasMovement
+    }
+    
+    private func slidePosition(from position: GridPosition, direction: MovementDirection) -> GridPosition {
+        var newRow = position.row
+        var newColumn = position.column
+        
+        switch direction {
+        case .right:
+            newColumn = columns - 1
+        case .left:
+            newColumn = 0
+        case .up:
+            newRow = 0
+        case .down:
+            newRow = rows - 1
+        }
+        
+        return GridPosition(row: newRow, column: newColumn)
     }
 }

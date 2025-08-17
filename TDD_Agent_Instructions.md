@@ -86,15 +86,17 @@ Use `precondition_behaviorUnderTest_expectation` format:
 
 ### Red Phase Principles
 - Write the smallest failing test that describes one behavior
-- Test should fail because feature doesn't exist, not due to syntax errors
+- Test should fail because feature doesn't exist (returns wrong value), NOT due to compilation errors
+- Add placeholder methods/properties that compile but return nil/false/empty to make tests fail properly
 - Focus on the interface and expected behavior first
 - Use descriptive test names that read like specifications
 
 ### Green Phase Principles  
-- Write the minimal code to make the test pass
+- Write the minimal code to make ONE test pass at a time
 - Don't worry about clean code yet - just make it work
-- Resist the urge to implement more than what the test requires
+- Resist the urge to implement more than what the single test requires
 - Use hard-coded values if they make the test pass
+- Make tests pass one by one, not all at once
 
 ### Refactor Phase Principles
 - Improve code quality without changing behavior
