@@ -101,15 +101,10 @@ struct GameGrid {
                     hasMovement = true
                     resultTiles[position.row][position.column] = nil
                     
-                    if slideResult.shouldPromote {
-                        if character == .superCoolKittyKate {
-                            shouldExpandGrid = true
-                            resultTiles[newPos.row][newPos.column] = nil
-                        } else if let promotedCharacter = character.nextCharacter {
-                            resultTiles[newPos.row][newPos.column] = promotedCharacter
-                        }
-                    } else {
-                        resultTiles[newPos.row][newPos.column] = character
+                    let promotionResult = handleCharacterPromotion(character: character, shouldPromote: slideResult.shouldPromote)
+                    resultTiles[newPos.row][newPos.column] = promotionResult.finalCharacter
+                    if promotionResult.shouldExpandGrid {
+                        shouldExpandGrid = true
                     }
                 }
             }
@@ -123,6 +118,20 @@ struct GameGrid {
         }
         
         return hasMovement
+    }
+    
+    private func handleCharacterPromotion(character: GameCharacter, shouldPromote: Bool) -> (finalCharacter: GameCharacter?, shouldExpandGrid: Bool) {
+        guard shouldPromote else {
+            return (character, false)
+        }
+        
+        if character == .superCoolKittyKate {
+            return (nil, true)
+        } else if let promotedCharacter = character.nextCharacter {
+            return (promotedCharacter, false)
+        }
+        
+        return (character, false)
     }
     
     private func getAllPositions() -> [GridPosition] {
