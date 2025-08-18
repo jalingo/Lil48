@@ -87,6 +87,7 @@ struct GameGrid {
     mutating func move(direction: MovementDirection) -> Bool {
         var hasMovement = false
         var resultTiles = tiles
+        var shouldExpandGrid = false
         
         let positions = getAllPositions()
         let sortedPositions = sortPositionsForDirection(positions, direction: direction)
@@ -100,8 +101,13 @@ struct GameGrid {
                     hasMovement = true
                     resultTiles[position.row][position.column] = nil
                     
-                    if slideResult.shouldPromote, let promotedCharacter = character.nextCharacter {
-                        resultTiles[newPos.row][newPos.column] = promotedCharacter
+                    if slideResult.shouldPromote {
+                        if character == .superCoolKittyKate {
+                            shouldExpandGrid = true
+                            resultTiles[newPos.row][newPos.column] = nil
+                        } else if let promotedCharacter = character.nextCharacter {
+                            resultTiles[newPos.row][newPos.column] = promotedCharacter
+                        }
                     } else {
                         resultTiles[newPos.row][newPos.column] = character
                     }
@@ -111,6 +117,9 @@ struct GameGrid {
         
         if hasMovement {
             tiles = resultTiles
+            if shouldExpandGrid {
+                _ = expandGrid()
+            }
         }
         
         return hasMovement

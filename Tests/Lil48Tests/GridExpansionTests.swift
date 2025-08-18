@@ -51,4 +51,19 @@ struct GridExpansionTests {
         #expect(grid.rows == 5)
         #expect(grid.columns == 5)
     }
+    
+    @Test("Two Super Cool Kitty Kates colliding triggers grid expansion")
+    func twoSuperCoolKittyKates_moveTowardEachOther_triggersGridExpansion() throws {
+        var grid = GameGrid()
+        try grid.place(.superCoolKittyKate, at: GridPosition(row: 0, column: 0))
+        try grid.place(.superCoolKittyKate, at: GridPosition(row: 0, column: 1))
+        
+        let result = grid.move(direction: .right)
+        
+        #expect(result == true)
+        #expect(grid.rows == 3)
+        #expect(grid.columns == 3)
+        #expect(try grid.isEmpty(at: GridPosition(row: 0, column: 0)))
+        #expect(try grid.isEmpty(at: GridPosition(row: 0, column: 1)))
+    }
 }
