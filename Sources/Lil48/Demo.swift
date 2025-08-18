@@ -5,7 +5,7 @@ public struct GridDemo {
         print("🎮 Lil48 Grid Foundation Demo")
         print("===============================\n")
         
-        var viewModel = GameGridViewModel()
+        let viewModel = GameGridViewModel()
         
         print("Initial empty grid:")
         print(viewModel.gridSummary)

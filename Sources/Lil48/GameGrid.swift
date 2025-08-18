@@ -16,6 +16,17 @@ public enum GameCharacter {
     case snifflingSteve
     case principalYavno
     case superCoolKittyKate
+    
+    var nextCharacter: GameCharacter? {
+        switch self {
+        case .coolKittyKate: return .bullyBob
+        case .bullyBob: return .quickRick
+        case .quickRick: return .snifflingSteve
+        case .snifflingSteve: return .principalYavno
+        case .principalYavno: return .superCoolKittyKate
+        case .superCoolKittyKate: return nil
+        }
+    }
 }
 
 public enum MovementDirection {
@@ -79,12 +90,18 @@ struct GameGrid {
         
         for position in sortedPositions {
             if let character = tiles[position.row][position.column] {
-                let newPos = slidePosition(from: position, direction: direction, in: resultTiles)
+                let slideResult = slidePosition(from: position, direction: direction, in: resultTiles, currentCharacter: character)
+                let newPos = slideResult.position
                 
                 if newPos.row != position.row || newPos.column != position.column {
                     hasMovement = true
                     resultTiles[position.row][position.column] = nil
-                    resultTiles[newPos.row][newPos.column] = character
+                    
+                    if slideResult.shouldPromote, let promotedCharacter = character.nextCharacter {
+                        resultTiles[newPos.row][newPos.column] = promotedCharacter
+                    } else {
+                        resultTiles[newPos.row][newPos.column] = character
+                    }
                 }
             }
         }
@@ -119,45 +136,67 @@ struct GameGrid {
         }
     }
     
-    private func slidePosition(from position: GridPosition, direction: MovementDirection, in grid: [[GameCharacter?]]) -> GridPosition {
+    private func slidePosition(from position: GridPosition, direction: MovementDirection, in grid: [[GameCharacter?]], currentCharacter: GameCharacter) -> (position: GridPosition, shouldPromote: Bool, targetCharacter: GameCharacter?) {
         var newRow = position.row
         var newColumn = position.column
+        var shouldPromote = false
+        var targetCharacter: GameCharacter? = nil
         
         switch direction {
         case .right:
             for col in (position.column + 1)..<columns {
-                if grid[position.row][col] == nil {
-                    newColumn = col
-                } else {
+                if let obstacle = grid[position.row][col] {
+                    if obstacle == currentCharacter {
+                        shouldPromote = true
+                        targetCharacter = obstacle
+                        newColumn = col
+                    }
                     break
+                } else {
+                    newColumn = col
                 }
             }
         case .left:
             for col in (0..<position.column).reversed() {
-                if grid[position.row][col] == nil {
-                    newColumn = col
-                } else {
+                if let obstacle = grid[position.row][col] {
+                    if obstacle == currentCharacter {
+                        shouldPromote = true
+                        targetCharacter = obstacle
+                        newColumn = col
+                    }
                     break
+                } else {
+                    newColumn = col
                 }
             }
         case .down:
             for row in (position.row + 1)..<rows {
-                if grid[row][position.column] == nil {
-                    newRow = row
-                } else {
+                if let obstacle = grid[row][position.column] {
+                    if obstacle == currentCharacter {
+                        shouldPromote = true
+                        targetCharacter = obstacle
+                        newRow = row
+                    }
                     break
+                } else {
+                    newRow = row
                 }
             }
         case .up:
             for row in (0..<position.row).reversed() {
-                if grid[row][position.column] == nil {
-                    newRow = row
-                } else {
+                if let obstacle = grid[row][position.column] {
+                    if obstacle == currentCharacter {
+                        shouldPromote = true
+                        targetCharacter = obstacle
+                        newRow = row
+                    }
                     break
+                } else {
+                    newRow = row
                 }
             }
         }
         
-        return GridPosition(row: newRow, column: newColumn)
+        return (GridPosition(row: newRow, column: newColumn), shouldPromote, targetCharacter)
     }
 }

@@ -80,4 +80,17 @@ struct MovementTests {
         #expect(try grid.character(at: GridPosition(row: 0, column: 0)) == .coolKittyKate)
         #expect(try grid.character(at: GridPosition(row: 0, column: 1)) == .bullyBob)
     }
+    
+    @Test("Two identical characters merge into next character when colliding")
+    func twoIdenticalCharacters_moveTowardEachOther_promoteToNextCharacter() throws {
+        var grid = GameGrid()
+        try grid.place(.coolKittyKate, at: GridPosition(row: 0, column: 0))
+        try grid.place(.coolKittyKate, at: GridPosition(row: 0, column: 1))
+        
+        let result = grid.move(direction: .right)
+        
+        #expect(result == true)
+        #expect(try grid.isEmpty(at: GridPosition(row: 0, column: 0)))
+        #expect(try grid.character(at: GridPosition(row: 0, column: 1)) == .bullyBob)
+    }
 }
