@@ -36,14 +36,17 @@ public enum MovementDirection {
 struct GameGrid {
     private enum Constants {
         static let defaultSize = 2
+        static let maxSize = 5
     }
     
     private var tiles: [[GameCharacter?]]
+    private var currentSize: Int
     
-    var rows: Int { Constants.defaultSize }
-    var columns: Int { Constants.defaultSize }
+    var rows: Int { currentSize }
+    var columns: Int { currentSize }
     
     init() {
+        currentSize = Constants.defaultSize
         tiles = Array(repeating: Array(repeating: nil, count: Constants.defaultSize), count: Constants.defaultSize)
     }
     
@@ -198,5 +201,22 @@ struct GameGrid {
         }
         
         return (GridPosition(row: newRow, column: newColumn), shouldPromote, targetCharacter)
+    }
+    
+    mutating func expandGrid() -> Bool {
+        guard currentSize < Constants.maxSize else { return false }
+        
+        let newSize = currentSize + 1
+        var newTiles = Array(repeating: Array(repeating: nil as GameCharacter?, count: newSize), count: newSize)
+        
+        for row in 0..<currentSize {
+            for column in 0..<currentSize {
+                newTiles[row][column] = tiles[row][column]
+            }
+        }
+        
+        currentSize = newSize
+        tiles = newTiles
+        return true
     }
 }

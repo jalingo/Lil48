@@ -12,6 +12,7 @@ The agent follows the classic Red-Green-Refactor cycle:
 - Tests must fail for the right reason (feature doesn't exist)
 - Use Swift Testing framework (not XCTest)
 - Follow naming convention: `test_<behavior>_<expected_outcome>`
+- User runs tests to verify failure before proceeding
 
 ### 🟢 GREEN Phase  
 - Write the simplest code possible to make tests pass
