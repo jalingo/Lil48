@@ -6,7 +6,8 @@ Character-based puzzle game with SwiftUI and TDD architecture.
 
 - **Movement System**: Directional swipe gestures with collision detection
 - **Character Promotion**: 2048-style merging of identical characters
-- **Grid Operations**: Place, remove, and slide characters on 2x2 grid
+- **Dynamic Grid System**: Expandable grid from 2x2 up to 5x5 with character preservation
+- **Grid Operations**: Place, remove, and slide characters with intelligent collision detection
 - **SwiftUI Interface**: Interactive game view with tap and swipe controls
 
 ## Character Progression
@@ -27,6 +28,12 @@ swift run Lil48App
 ```
 
 ## Changes
+
+17 Aug 2025: Dynamic Grid Expansion and Code Refactoring
+- Implement dynamic grid expansion system (2x2 to 5x5)
+- Add Super Cool Kitty Kate collision triggers automatic grid expansion
+- Refactor character promotion logic into separate testable methods
+- Enhance TDD workflow with user test verification process
 
 17 Aug 2025: Interface Cleanup and Character Promotion
 - Remove demo button and runDemo method
