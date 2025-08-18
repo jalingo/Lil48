@@ -57,11 +57,6 @@ public struct GameView: View {
                 
                 // Action Buttons
                 VStack(spacing: 12) {
-                    Button("Run Demo") {
-                        runDemo()
-                    }
-                    .buttonStyle(.borderedProminent)
-                    
                     Button("Clear Grid") {
                         viewModel.clearGrid()
                     }
@@ -88,13 +83,6 @@ public struct GameView: View {
             // Remove character
             viewModel.removeCharacter(at: row, column: column)
         }
-    }
-    
-    private func runDemo() {
-        viewModel.clearGrid()
-        // Place some demo characters
-        viewModel.placeCharacter(.coolKittyKate, at: 0, column: 0)
-        viewModel.placeCharacter(.bullyBob, at: 1, column: 1)
     }
     
     private func handleSwipe(_ value: DragGesture.Value) {
