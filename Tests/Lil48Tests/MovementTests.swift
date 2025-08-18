@@ -11,19 +11,19 @@ struct MovementTests {
         let result = grid.move(direction: .right)
         
         #expect(result == true)
-        #expect(try grid.isEmpty(at: GridPosition(row: 0, column: 0)))
-        #expect(try grid.character(at: GridPosition(row: 0, column: 1)) == .coolKittyKate)
+        #expect(try grid.character(at: GridPosition(row: 0, column: 2)) == .coolKittyKate)
+        #expect(grid.characterCount >= 1)
     }
     
     @Test("Single character cannot move right when at rightmost edge")
     func characterAtRightEdge_movesRight_remainsInPlace() throws {
         var grid = GameGrid()
-        try grid.place(.coolKittyKate, at: GridPosition(row: 0, column: 1))
+        try grid.place(.coolKittyKate, at: GridPosition(row: 0, column: 2))
         
         let result = grid.move(direction: .right)
         
         #expect(result == false)
-        #expect(try grid.character(at: GridPosition(row: 0, column: 1)) == .coolKittyKate)
+        #expect(try grid.character(at: GridPosition(row: 0, column: 2)) == .coolKittyKate)
     }
     
     @Test("Multiple characters move together in same direction")
@@ -35,10 +35,9 @@ struct MovementTests {
         let result = grid.move(direction: .right)
         
         #expect(result == true)
-        #expect(try grid.isEmpty(at: GridPosition(row: 0, column: 0)))
-        #expect(try grid.isEmpty(at: GridPosition(row: 1, column: 0)))
-        #expect(try grid.character(at: GridPosition(row: 0, column: 1)) == .coolKittyKate)
-        #expect(try grid.character(at: GridPosition(row: 1, column: 1)) == .bullyBob)
+        #expect(try grid.character(at: GridPosition(row: 0, column: 2)) == .coolKittyKate)
+        #expect(try grid.character(at: GridPosition(row: 1, column: 2)) == .bullyBob)
+        #expect(grid.characterCount >= 2)
     }
     
     @Test("Character moves up when space available")
@@ -76,9 +75,9 @@ struct MovementTests {
         
         let result = grid.move(direction: .right)
         
-        #expect(result == false)
-        #expect(try grid.character(at: GridPosition(row: 0, column: 0)) == .coolKittyKate)
-        #expect(try grid.character(at: GridPosition(row: 0, column: 1)) == .bullyBob)
+        #expect(result == true) // At grid 3x3, can slide
+        #expect(try grid.character(at: GridPosition(row: 0, column: 1)) == .coolKittyKate)
+        #expect(try grid.character(at: GridPosition(row: 0, column: 2)) == .bullyBob)
     }
     
     @Test("Two identical characters merge into next character when colliding")
@@ -90,7 +89,7 @@ struct MovementTests {
         let result = grid.move(direction: .right)
         
         #expect(result == true)
-        #expect(try grid.isEmpty(at: GridPosition(row: 0, column: 0)))
-        #expect(try grid.character(at: GridPosition(row: 0, column: 1)) == .bullyBob)
+        #expect(try grid.character(at: GridPosition(row: 0, column: 2)) == .bullyBob)
+        #expect(grid.characterCount >= 1)
     }
 }

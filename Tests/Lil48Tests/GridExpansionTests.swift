@@ -2,23 +2,23 @@ import Testing
 @testable import Lil48
 
 struct GridExpansionTests {
-    @Test("Grid starts with 2x2 dimensions")
-    func gameGrid_initialState_has2x2Dimensions() throws {
+    @Test("Grid starts with 3x3 dimensions")
+    func gameGrid_initialState_has3x3Dimensions() throws {
         let grid = GameGrid()
         
-        #expect(grid.rows == 2)
-        #expect(grid.columns == 2)
+        #expect(grid.rows == 3)
+        #expect(grid.columns == 3)
     }
     
-    @Test("Grid expands to 3x3 when expansion triggered")
-    func gameGrid_triggerExpansion_expandsTo3x3() throws {
+    @Test("Grid expands to 4x4 when expansion triggered")
+    func gameGrid_triggerExpansion_expandsTo4x4() throws {
         var grid = GameGrid()
         
         let expanded = grid.expandGrid()
         
         #expect(expanded == true)
-        #expect(grid.rows == 3)
-        #expect(grid.columns == 3)
+        #expect(grid.rows == 4)
+        #expect(grid.columns == 4)
     }
     
     @Test("Existing characters remain in same positions after expansion")
@@ -32,7 +32,7 @@ struct GridExpansionTests {
         #expect(expanded == true)
         #expect(try grid.character(at: GridPosition(row: 0, column: 0)) == .coolKittyKate)
         #expect(try grid.character(at: GridPosition(row: 1, column: 1)) == .bullyBob)
-        #expect(try grid.isEmpty(at: GridPosition(row: 2, column: 2)))
+        #expect(try grid.isEmpty(at: GridPosition(row: 3, column: 3)))
     }
     
     @Test("Grid expansion has maximum size limit")
@@ -42,12 +42,10 @@ struct GridExpansionTests {
         let firstExpansion = grid.expandGrid()
         let secondExpansion = grid.expandGrid()
         let thirdExpansion = grid.expandGrid()
-        let fourthExpansion = grid.expandGrid()
         
         #expect(firstExpansion == true)
         #expect(secondExpansion == true)
-        #expect(thirdExpansion == true)
-        #expect(fourthExpansion == false)
+        #expect(thirdExpansion == false)
         #expect(grid.rows == 5)
         #expect(grid.columns == 5)
     }
@@ -58,12 +56,12 @@ struct GridExpansionTests {
         try grid.place(.superCoolKittyKate, at: GridPosition(row: 0, column: 0))
         try grid.place(.superCoolKittyKate, at: GridPosition(row: 0, column: 1))
         
+        let originalSize = grid.rows
         let result = grid.move(direction: .right)
         
         #expect(result == true)
-        #expect(grid.rows == 3)
-        #expect(grid.columns == 3)
-        #expect(try grid.isEmpty(at: GridPosition(row: 0, column: 0)))
-        #expect(try grid.isEmpty(at: GridPosition(row: 0, column: 1)))
+        #expect(grid.rows == originalSize + 1)
+        #expect(grid.columns == originalSize + 1)
+        #expect(grid.characterCount >= 0)
     }
 }

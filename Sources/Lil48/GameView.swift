@@ -15,10 +15,7 @@ public struct GameView: View {
                             ForEach(0..<viewModel.columns, id: \.self) { column in
                                 GridTileView(
                                     character: viewModel.character(at: row, column: column),
-                                    isEmpty: viewModel.isEmpty(at: row, column: column),
-                                    onTap: {
-                                        handleTileTap(row: row, column: column)
-                                    }
+                                    isEmpty: viewModel.isEmpty(at: row, column: column)
                                 )
                             }
                         }
@@ -57,6 +54,13 @@ public struct GameView: View {
                 
                 // Action Buttons
                 VStack(spacing: 12) {
+                    if viewModel.isEmpty {
+                        Button("Start Game") {
+                            viewModel.spawnInitialCharacter()
+                        }
+                        .buttonStyle(.bordered)
+                    }
+                    
                     Button("Clear Grid") {
                         viewModel.clearGrid()
                     }
@@ -67,21 +71,6 @@ public struct GameView: View {
             }
             .padding()
             .navigationTitle("Lil48 Game")
-        }
-    }
-    
-    private func handleTileTap(row: Int, column: Int) {
-        if viewModel.isEmpty(at: row, column: column) {
-            // Place a random character
-            let characters: [GameCharacter] = [
-                .coolKittyKate, .bullyBob, .quickRick, 
-                .snifflingSteve, .principalYavno, .superCoolKittyKate
-            ]
-            let randomCharacter = characters.randomElement() ?? .coolKittyKate
-            viewModel.placeCharacter(randomCharacter, at: row, column: column)
-        } else {
-            // Remove character
-            viewModel.removeCharacter(at: row, column: column)
         }
     }
     
@@ -108,22 +97,18 @@ public struct GameView: View {
 private struct GridTileView: View {
     let character: GameCharacter?
     let isEmpty: Bool
-    let onTap: () -> Void
     
     var body: some View {
-        Button(action: onTap) {
-            Rectangle()
-                .fill(tileColor)
-                .frame(width: 80, height: 80)
-                .overlay(
-                    Text(tileText)
-                        .font(.caption)
-                        .foregroundColor(.white)
-                        .multilineTextAlignment(.center)
-                )
-                .cornerRadius(4)
-        }
-        .buttonStyle(PlainButtonStyle())
+        Rectangle()
+            .fill(tileColor)
+            .frame(width: 80, height: 80)
+            .overlay(
+                Text(tileText)
+                    .font(.caption)
+                    .foregroundColor(.white)
+                    .multilineTextAlignment(.center)
+            )
+            .cornerRadius(4)
     }
     
     private var tileColor: Color {

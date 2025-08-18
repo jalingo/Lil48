@@ -4,7 +4,7 @@ enum GridError: Error {
     case positionOutOfBounds
 }
 
-struct GridPosition {
+struct GridPosition: Equatable {
     let row: Int
     let column: Int
 }
@@ -35,7 +35,7 @@ public enum MovementDirection {
 
 struct GameGrid {
     private enum Constants {
-        static let defaultSize = 2
+        static let defaultSize = 3
         static let maxSize = 5
     }
     
@@ -114,6 +114,12 @@ struct GameGrid {
             tiles = resultTiles
             if shouldExpandGrid {
                 _ = expandGrid()
+            }
+            
+            let spawnChance = calculateSpawnChance()
+            let randomValue = Double.random(in: 0...1)
+            if randomValue < spawnChance {
+                _ = spawnCharacter()
             }
         }
         
@@ -236,5 +242,61 @@ struct GameGrid {
         currentSize = newSize
         tiles = newTiles
         return true
+    }
+    
+    mutating func spawnInitialCharacter() -> Bool {
+        tiles[0][0] = .coolKittyKate
+        return true
+    }
+    
+    mutating func spawnCharacter() -> Bool {
+        let empty = emptyPositions
+        guard !empty.isEmpty else { return false }
+        
+        let randomPosition = empty[0]
+        tiles[randomPosition.row][randomPosition.column] = .coolKittyKate
+        return true
+    }
+    
+    func calculateSpawnChance() -> Double {
+        let baseChance = 0.2
+        let gridSizeMultiplier = Double(currentSize) / Double(Constants.defaultSize)
+        return min(baseChance * gridSizeMultiplier, 1.0)
+    }
+    
+    var characterCount: Int {
+        var count = 0
+        for row in 0..<currentSize {
+            for column in 0..<currentSize {
+                if tiles[row][column] != nil {
+                    count += 1
+                }
+            }
+        }
+        return count
+    }
+    
+    var emptyPositions: [GridPosition] {
+        var positions: [GridPosition] = []
+        for row in 0..<currentSize {
+            for column in 0..<currentSize {
+                if tiles[row][column] == nil {
+                    positions.append(GridPosition(row: row, column: column))
+                }
+            }
+        }
+        return positions
+    }
+    
+    var occupiedPositions: [GridPosition] {
+        var positions: [GridPosition] = []
+        for row in 0..<currentSize {
+            for column in 0..<currentSize {
+                if tiles[row][column] != nil {
+                    positions.append(GridPosition(row: row, column: column))
+                }
+            }
+        }
+        return positions
     }
 }

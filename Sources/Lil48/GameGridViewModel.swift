@@ -124,4 +124,9 @@ public class GameGridViewModel {
     public func moveCharacters(direction: MovementDirection) -> Bool {
         gameGrid.move(direction: direction)
     }
+    
+    /// 10. spawnInitialCharacter() method - spawns first character to start game
+    public func spawnInitialCharacter() {
+        _ = gameGrid.spawnInitialCharacter()
+    }
 }

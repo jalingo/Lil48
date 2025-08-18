@@ -4,15 +4,15 @@ import Testing
 /// Tests for basic grid foundation functionality (Iteration 1)
 struct GridFoundationTests {
     
-    @Test("Grid initializes with 2x2 dimensions")
-    func initialState_gridCreated_hasTwoByTwoDimensions() {
+    @Test("Grid initializes with 3x3 dimensions")
+    func initialState_gridCreated_hasThreeByThreeDimensions() {
         // Given - Starting a new game
         // When - Grid is created
-        // Then - Should have 2 rows and 2 columns
+        // Then - Should have 3 rows and 3 columns
         
         let grid = GameGrid()
-        #expect(grid.rows == 2)
-        #expect(grid.columns == 2)
+        #expect(grid.rows == 3)
+        #expect(grid.columns == 3)
     }
     
     @Test("New grid is completely empty")
@@ -46,9 +46,6 @@ struct GridFoundationTests {
     
     @Test("Movement is blocked at board boundaries")
     func edgePosition_moveOffBoard_isBlocked() {
-        // Given - Character at grid edge
-        // When - Attempting to move off board
-        // Then - Movement should be blocked
         
         let grid = GameGrid()
         
@@ -56,13 +53,13 @@ struct GridFoundationTests {
         #expect(grid.canMove(from: GridPosition(row: 0, column: 0), in: .up) == false)
         
         // Bottom edge - can't move down  
-        #expect(grid.canMove(from: GridPosition(row: 1, column: 0), in: .down) == false)
+        #expect(grid.canMove(from: GridPosition(row: 2, column: 0), in: .down) == false)
         
         // Left edge - can't move left
         #expect(grid.canMove(from: GridPosition(row: 0, column: 0), in: .left) == false)
         
         // Right edge - can't move right
-        #expect(grid.canMove(from: GridPosition(row: 0, column: 1), in: .right) == false)
+        #expect(grid.canMove(from: GridPosition(row: 0, column: 2), in: .right) == false)
     }
     
     @Test("Valid movements are allowed within grid boundaries")
@@ -99,7 +96,7 @@ struct GridFoundationTests {
         }
         
         #expect(throws: GridError.positionOutOfBounds) {
-            try grid.character(at: GridPosition(row: 2, column: 0))
+            try grid.character(at: GridPosition(row: 3, column: 0))
         }
         
         #expect(throws: GridError.positionOutOfBounds) {
