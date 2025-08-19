@@ -18,7 +18,8 @@ struct MovementTests {
     
     @Test("Single character cannot move right when at rightmost edge")
     func characterAtRightEdge_movesRight_remainsInPlace() throws {
-        var grid = GameGrid()
+        var grid = try GameGrid.createEmpty()
+        
         let edge = grid.columns - 1
         try grid.place(.coolKittyKate, at: GridPosition(row: 0, column: edge))
         
@@ -57,7 +58,7 @@ struct MovementTests {
     
     @Test("No characters present results in no movement")
     func emptyGrid_moveAnyDirection_returnsFalse() throws {
-        var grid = GameGrid()
+        var grid = try GameGrid.createEmpty()
         
         let resultRight = grid.move(direction: .right)
         let resultLeft = grid.move(direction: .left)

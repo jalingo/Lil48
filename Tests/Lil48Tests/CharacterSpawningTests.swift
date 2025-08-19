@@ -4,7 +4,7 @@ import Testing
 struct CharacterSpawningTests {
     @Test("Grid spawns initial character when empty")
     func emptyGrid_spawnInitialCharacter_placesCharacterInGrid() throws {
-        var grid = GameGrid()
+        var grid = try GameGrid.createEmpty()
         
         let spawned = grid.spawnInitialCharacter()
         
@@ -29,7 +29,7 @@ struct CharacterSpawningTests {
     
     @Test("Empty grid has zero spawn chance")
     func emptyGrid_calculateSpawnChance_returnsZero() throws {
-        let grid = GameGrid()
+        let grid = try GameGrid.createEmpty()
         
         let spawnChance = grid.calculateSpawnChance()
         

@@ -420,15 +420,16 @@ struct GameGridViewModelTests {
         #expect(viewModel.isFull == true, "Full grid should report as full")
     }
     
-    @Test("ViewModel indicates when grid is empty")
-    func emptyGrid_emptinessChecked_returnsTrue() {
-        // Given - ViewModel with no characters placed
-        // When - Grid emptiness is checked
-        // Then - Should return true
-        
+    @Test("ViewModel indicates when grid becomes empty after clearing")
+    func clearedGrid_emptinessChecked_returnsTrue() throws {
         let viewModel = GameGridViewModel()
         
-        // This will PASS now that isEmpty property is implemented
-        #expect(viewModel.isEmpty == true, "Empty grid should report as empty")
+        guard let occupiedPosition = viewModel.occupiedPositions.first else {
+            #expect(Bool(false), "Grid should have initial character")
+            return
+        }
+        viewModel.removecharacter(row: occupiedPosition.row, column: occupiedPosition.column)
+        
+        #expect(viewModel.isEmpty == true)
     }
 }

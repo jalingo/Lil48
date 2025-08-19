@@ -4,28 +4,22 @@ import Testing
 /// Tests for basic grid foundation functionality (Iteration 1)
 struct GridFoundationTests {
     
-    @Test("New grid is completely empty")
-    func initialState_gridCreated_allPositionsEmpty() throws {
-        // Given - Starting a new game
-        // When - Grid is created
-        // Then - All positions should be empty
-        
+    @Test("New grid starts with one character")
+    func initialState_gridCreated_hasOneCharacter() throws {
         let grid = GameGrid()
-        #expect(try grid.isEmpty(row: GridPosition(row: 0, column: 0)))
-        #expect(try grid.isEmpty(row: GridPosition(row: 0, column: 1)))
-        #expect(try grid.isEmpty(row: GridPosition(row: 1, column: 0)))
-        #expect(try grid.isEmpty(row: GridPosition(row: 1, column: 1)))
+        #expect(grid.characterCount == 1)
+        #expect(grid.occupiedPositions.count == 1)
+        #expect(grid.emptyPositions.count == 15)
     }
     
     @Test("Character can be placed at valid position")
     func emptyPosition_characterPlaced_positionBecomesOccupied() throws {
-        // Given - Empty grid and a character
-        // When - Character is placed at position
-        // Then - Position should contain the character
-        
         var grid = GameGrid()
-        let character = GameCharacter.coolKittyKate
-        let position = GridPosition(row: 0, column: 0)
+        let character = GameCharacter.bullyBob
+        guard let position = grid.emptyPositions.first else {
+            #expect(Bool(false), "Grid should have empty positions")
+            return
+        }
         
         try grid.place(character, at: position)
         
