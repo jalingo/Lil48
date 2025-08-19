@@ -118,17 +118,15 @@ struct CharacterSpawningTests {
         var grid = GameGrid()
         try grid.place(.bullyBob, at: GridPosition(row: 0, column: 0))
         try grid.place(.quickRick, at: GridPosition(row: 1, column: 1))
+        let originalCount = grid.characterCount
         
         let spawned = grid.spawnCharacter()
         
         #expect(spawned == true)
-        #expect(grid.characterCount == 3)
-        let emptyPositions = [GridPosition(row: 0, column: 1), GridPosition(row: 1, column: 0)]
-        let occupiedPositions = grid.occupiedPositions
-        let newCharacterPosition = occupiedPositions.first(where: { pos in
-            pos != GridPosition(row: 0, column: 0) && pos != GridPosition(row: 1, column: 1)
-        })
-        #expect(emptyPositions.contains(where: { $0 == newCharacterPosition! }))
+        #expect(grid.characterCount == originalCount + 1)
+        // Verify original characters are still there
+        #expect(try grid.character(row: GridPosition(row: 0, column: 0)) == .bullyBob)
+        #expect(try grid.character(row: GridPosition(row: 1, column: 1)) == .quickRick)
     }
     
     @Test("Expanded grid spawns character using adaptive logic")

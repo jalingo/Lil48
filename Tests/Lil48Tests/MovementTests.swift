@@ -97,4 +97,21 @@ struct MovementTests {
         #expect(try grid.character(row: GridPosition(row: 0, column: edge)) == .bullyBob)
         #expect(grid.characterCount >= 1)
     }
+    
+    @Test("Newly promoted character cannot collide again in same move")
+    func ckk_ckk_bb_moveRight_preventsDoubleMerge() throws {
+        var grid = GameGrid()
+        try grid.place(.coolKittyKate, at: GridPosition(row: 0, column: 0))
+        try grid.place(.coolKittyKate, at: GridPosition(row: 0, column: 1))
+        try grid.place(.bullyBob, at: GridPosition(row: 0, column: 2))
+        
+        let result = grid.move(direction: .right)
+        
+        #expect(result == true)
+        // Two Bully Bobs should exist separately (no cascading merge in same move)
+        #expect(try grid.character(row: GridPosition(row: 0, column: 3)) == .bullyBob)
+        #expect(try grid.character(row: GridPosition(row: 0, column: 2)) == .bullyBob)
+        #expect(try grid.isEmpty(row: GridPosition(row: 0, column: 1)))
+        #expect(try grid.isEmpty(row: GridPosition(row: 0, column: 0)))
+    }
 }
