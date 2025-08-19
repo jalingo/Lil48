@@ -2,23 +2,25 @@ import Testing
 @testable import Lil48
 
 struct GridExpansionTests {
-    @Test("Grid starts with 3x3 dimensions")
+    @Test("Grid starts with 4x4 dimensions")
     func gameGrid_initialState_has3x3Dimensions() throws {
         let grid = GameGrid()
         
-        #expect(grid.rows == 3)
-        #expect(grid.columns == 3)
+        #expect(grid.rows == 4)
+        #expect(grid.columns == 4)
     }
     
     @Test("Grid expands to 4x4 when expansion triggered")
     func gameGrid_triggerExpansion_expandsTo4x4() throws {
         var grid = GameGrid()
+        let originalRows = grid.rows
+        let originalCols = grid.columns
         
         let expanded = grid.expandGrid()
         
         #expect(expanded == true)
-        #expect(grid.rows == 4)
-        #expect(grid.columns == 4)
+        #expect(grid.rows == originalRows + 1)
+        #expect(grid.columns == originalCols + 1)
     }
     
     @Test("Existing characters remain in same positions after expansion")
@@ -30,24 +32,26 @@ struct GridExpansionTests {
         let expanded = grid.expandGrid()
         
         #expect(expanded == true)
-        #expect(try grid.character(at: GridPosition(row: 0, column: 0)) == .coolKittyKate)
-        #expect(try grid.character(at: GridPosition(row: 1, column: 1)) == .bullyBob)
-        #expect(try grid.isEmpty(at: GridPosition(row: 3, column: 3)))
+        #expect(try grid.character(row: GridPosition(row: 0, column: 0)) == .coolKittyKate)
+        #expect(try grid.character(row: GridPosition(row: 1, column: 1)) == .bullyBob)
+        #expect(try grid.isEmpty(row: GridPosition(row: 3, column: 3)))
     }
     
     @Test("Grid expansion has maximum size limit")
     func gameGrid_expandMultipleTimes_reachesMaximumSize() throws {
         var grid = GameGrid()
+        let start = grid.rows
+        let maxSize = 9
+        let outOfRangeOffset = 2 // How many attempts past range to try
+
+        for index in start..<maxSize + outOfRangeOffset {
+            print(" ## Index: \(index) Current: \(grid.currentSize)")
+            let result = grid.expandGrid()
+            #expect(result == (index < maxSize), "failed on \(index)")
+        }
         
-        let firstExpansion = grid.expandGrid()
-        let secondExpansion = grid.expandGrid()
-        let thirdExpansion = grid.expandGrid()
-        
-        #expect(firstExpansion == true)
-        #expect(secondExpansion == true)
-        #expect(thirdExpansion == false)
-        #expect(grid.rows == 5)
-        #expect(grid.columns == 5)
+        #expect(grid.rows == maxSize)
+        #expect(grid.columns == maxSize)
     }
     
     @Test("Two Super Cool Kitty Kates colliding triggers grid expansion")

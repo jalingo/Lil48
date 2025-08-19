@@ -10,7 +10,8 @@ struct CharacterSpawningTests {
         
         #expect(spawned == true)
         #expect(grid.characterCount == 1)
-        #expect(grid.emptyPositions.count == 8)
+        let expectedMax = (grid.rows * grid.columns) - 1
+        #expect(grid.emptyPositions.count == expectedMax)
     }
     
     @Test("Character spawning frequency increases with grid size")
@@ -43,7 +44,7 @@ struct CharacterSpawningTests {
         _ = grid.spawnInitialCharacter()
         let spawnedPosition = grid.occupiedPositions.first!
         
-        #expect(try grid.character(at: spawnedPosition) == .coolKittyKate)
+        #expect(try grid.character(row: spawnedPosition) == .coolKittyKate)
     }
     
     @Test("Character spawns in random empty position")

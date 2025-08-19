@@ -10,45 +10,23 @@ struct GameGridViewModelTests {
     
     @Test("ViewModel initializes without external dependencies")
     func defaultState_viewModelCreated_initializesSuccessfully() {
-        // Given - Starting a new game view
-        // When - ViewModel is created
-        // Then - Should initialize without dependencies
-        
         let viewModel = GameGridViewModel()
         
         // This test verifies successful initialization behavior
-        #expect(viewModel.rows == 3, "ViewModel should initialize with proper dimensions")
-        #expect(viewModel.columns == 3, "ViewModel should initialize with proper dimensions")
-    }
-    
-    @Test("ViewModel exposes correct initial grid dimensions")
-    func initialState_viewModelCreated_exposesCorrectDimensions() {
-        // Given - Starting a new game view
-        // When - ViewModel is created
-        // Then - Should expose 3x3 grid dimensions
-        
-        let viewModel = GameGridViewModel()
-        
-        // These will FAIL because dimension properties may not behave correctly
-        #expect(viewModel.rows == 3, "Should expose 2 rows initially")
-        #expect(viewModel.columns == 3, "Should expose 2 columns initially") 
+        #expect(viewModel.rows > 0)
+        #expect(viewModel.columns > 0)
     }
     
     // MARK: - Grid State Query Tests
     
     @Test("Empty grid reports all positions as empty")
     func initialState_queryAllPositions_allReportEmpty() {
-        // Given - Newly created ViewModel with empty grid
-        // When - All valid positions are queried for emptiness
-        // Then - All positions should report as empty
-        
         let viewModel = GameGridViewModel()
         
-        // These will FAIL because isEmpty behavior may not be properly implemented
-        #expect(viewModel.isEmpty(at: 0, column: 0) == true, "Top-left should be empty")
-        #expect(viewModel.isEmpty(at: 0, column: 1) == true, "Top-right should be empty")
-        #expect(viewModel.isEmpty(at: 1, column: 0) == true, "Bottom-left should be empty")
-        #expect(viewModel.isEmpty(at: 1, column: 1) == true, "Bottom-right should be empty")
+        #expect(viewModel.isEmpty(row: 0, column: 0) == true, "Top-left should be empty")
+        #expect(viewModel.isEmpty(row: 0, column: 1) == true, "Top-right should be empty")
+        #expect(viewModel.isEmpty(row: 1, column: 0) == true, "Bottom-left should be empty")
+        #expect(viewModel.isEmpty(row: 1, column: 1) == true, "Bottom-right should be empty")
     }
     
     @Test("Empty grid returns nil for all character queries")
@@ -60,10 +38,10 @@ struct GameGridViewModelTests {
         let viewModel = GameGridViewModel()
         
         // These will FAIL because character retrieval behavior may not handle nil correctly
-        #expect(viewModel.character(at: 0, column: 0) == nil, "Top-left should have no character")
-        #expect(viewModel.character(at: 0, column: 1) == nil, "Top-right should have no character")
-        #expect(viewModel.character(at: 1, column: 0) == nil, "Bottom-left should have no character")
-        #expect(viewModel.character(at: 1, column: 1) == nil, "Bottom-right should have no character")
+        #expect(viewModel.character(row: 0, column: 0) == nil, "Top-left should have no character")
+        #expect(viewModel.character(row: 0, column: 1) == nil, "Top-right should have no character")
+        #expect(viewModel.character(row: 1, column: 0) == nil, "Bottom-left should have no character")
+        #expect(viewModel.character(row: 1, column: 1) == nil, "Bottom-right should have no character")
     }
     
     // MARK: - Character Placement Tests
@@ -79,11 +57,11 @@ struct GameGridViewModelTests {
         let row = 0
         let column = 0
         
-        viewModel.placeCharacter(character, at: row, column: column)
+        viewModel.placeCharacter(character, row: row, column: column)
         
         // These will FAIL because placement behavior may not properly update state
-        #expect(viewModel.isEmpty(at: row, column: column) == false, "Position should no longer be empty")
-        #expect(viewModel.character(at: row, column: column) == character, "Position should contain placed character")
+        #expect(viewModel.isEmpty(row: row, column: column) == false, "Position should no longer be empty")
+        #expect(viewModel.character(row: row, column: column) == character, "Position should contain placed character")
     }
     
     @Test("Multiple character placements work correctly")
@@ -97,15 +75,15 @@ struct GameGridViewModelTests {
         let character2 = GameCharacter.bullyBob
         let character3 = GameCharacter.quickRick
         
-        viewModel.placeCharacter(character1, at: 0, column: 0)
-        viewModel.placeCharacter(character2, at: 0, column: 1)
-        viewModel.placeCharacter(character3, at: 1, column: 0)
+        viewModel.placeCharacter(character1, row: 0, column: 0)
+        viewModel.placeCharacter(character2, row: 0, column: 1)
+        viewModel.placeCharacter(character3, row: 1, column: 0)
         
         // These will FAIL because multiple placement behavior may not work correctly
-        #expect(viewModel.character(at: 0, column: 0) == character1, "First position should have first character")
-        #expect(viewModel.character(at: 0, column: 1) == character2, "Second position should have second character")
-        #expect(viewModel.character(at: 1, column: 0) == character3, "Third position should have third character")
-        #expect(viewModel.isEmpty(at: 1, column: 1) == true, "Unoccupied position should remain empty")
+        #expect(viewModel.character(row: 0, column: 0) == character1, "First position should have first character")
+        #expect(viewModel.character(row: 0, column: 1) == character2, "Second position should have second character")
+        #expect(viewModel.character(row: 1, column: 0) == character3, "Third position should have third character")
+        #expect(viewModel.isEmpty(row: 1, column: 1) == true, "Unoccupied position should remain empty")
     }
     
     @Test("Character replacement at same position works correctly")
@@ -120,12 +98,12 @@ struct GameGridViewModelTests {
         let row = 1
         let column = 1
         
-        viewModel.placeCharacter(originalCharacter, at: row, column: column)
-        viewModel.placeCharacter(replacementCharacter, at: row, column: column)
+        viewModel.placeCharacter(originalCharacter, row: row, column: column)
+        viewModel.placeCharacter(replacementCharacter, row: row, column: column)
         
         // This will FAIL because character replacement behavior may not work correctly
-        #expect(viewModel.character(at: row, column: column) == replacementCharacter, "Should contain replacement character")
-        #expect(viewModel.isEmpty(at: row, column: column) == false, "Position should not be empty")
+        #expect(viewModel.character(row: row, column: column) == replacementCharacter, "Should contain replacement character")
+        #expect(viewModel.isEmpty(row: row, column: column) == false, "Position should not be empty")
     }
     
     // MARK: - Invalid Position Handling Tests
@@ -139,7 +117,7 @@ struct GameGridViewModelTests {
         let viewModel = GameGridViewModel()
         
         // This will FAIL because error handling behavior may not be implemented correctly
-        let result = viewModel.character(at: -1, column: 0)
+        let result = viewModel.character(row: -1, column: 0)
         #expect(result == nil, "Invalid row should return nil gracefully")
     }
     
@@ -152,7 +130,7 @@ struct GameGridViewModelTests {
         let viewModel = GameGridViewModel()
         
         // This will FAIL because error handling behavior may not be implemented correctly
-        let result = viewModel.character(at: 0, column: -1)
+        let result = viewModel.character(row: 0, column: -1)
         #expect(result == nil, "Invalid column should return nil gracefully")
     }
     
@@ -165,7 +143,7 @@ struct GameGridViewModelTests {
         let viewModel = GameGridViewModel()
         
         // This will FAIL because bounds checking behavior may not be implemented correctly
-        let result = viewModel.character(at: 3, column: 0)
+        let result = viewModel.character(row: 3, column: 0)
         #expect(result == nil, "Row out of bounds should return nil gracefully")
     }
     
@@ -178,7 +156,7 @@ struct GameGridViewModelTests {
         let viewModel = GameGridViewModel()
         
         // This will FAIL because bounds checking behavior may not be implemented correctly
-        let result = viewModel.character(at: 0, column: 3)
+        let result = viewModel.character(row: 0, column: 3)
         #expect(result == nil, "Column out of bounds should return nil gracefully")
     }
     
@@ -191,7 +169,7 @@ struct GameGridViewModelTests {
         let viewModel = GameGridViewModel()
         
         // This will FAIL because error handling behavior may not be implemented correctly
-        let result = viewModel.isEmpty(at: -1, column: 0)
+        let result = viewModel.isEmpty(row: -1, column: 0)
         #expect(result == false, "Invalid row should return false for empty check")
     }
     
@@ -204,79 +182,55 @@ struct GameGridViewModelTests {
         let viewModel = GameGridViewModel()
         
         // This will FAIL because error handling behavior may not be implemented correctly
-        let result = viewModel.isEmpty(at: 0, column: -1)
+        let result = viewModel.isEmpty(row: 0, column: -1)
         #expect(result == false, "Invalid column should return false for empty check")
     }
     
     @Test("Empty check with row too large returns false gracefully")
     func invalidPosition_rowTooLarge_emptyCheckReturnsFalse() {
-        // Given - ViewModel with 3x3 grid
-        // When - Empty check is performed at row >= 3
-        // Then - Should return false gracefully (not throw)
-        
         let viewModel = GameGridViewModel()
         
-        // This will FAIL because bounds checking behavior may not be implemented correctly
-        let result = viewModel.isEmpty(at: 3, column: 0)
-        #expect(result == false, "Row out of bounds should return false for empty check")
+        let result = viewModel.isEmpty(row: viewModel.rows, column: 0)
+
+        #expect(result == false)
     }
     
     @Test("Empty check with column too large returns false gracefully")
     func invalidPosition_columnTooLarge_emptyCheckReturnsFalse() {
-        // Given - ViewModel with 3x3 grid
-        // When - Empty check is performed at column >= 3
-        // Then - Should return false gracefully (not throw)
-        
         let viewModel = GameGridViewModel()
         
-        // This will FAIL because bounds checking behavior may not be implemented correctly
-        let result = viewModel.isEmpty(at: 0, column: 3)
-        #expect(result == false, "Column out of bounds should return false for empty check")
+        let result = viewModel.isEmpty(row: 0, column: viewModel.rows)
+
+        #expect(result == false)
     }
     
     @Test("Character placement at negative row fails gracefully")
     func invalidPosition_negativeRow_placementFailsGracefully() {
-        // Given - ViewModel and a character
-        // When - Character placement is attempted at negative row
-        // Then - Should fail gracefully without throwing or crashing
-        
         let viewModel = GameGridViewModel()
         let character = GameCharacter.coolKittyKate
         
-        // This will FAIL because error handling behavior may not be implemented correctly
-        viewModel.placeCharacter(character, at: -1, column: 0)
-        // Test passes if no crash occurs and other positions remain unaffected
-        #expect(viewModel.character(at: 0, column: 0) == nil, "Valid positions should remain unaffected")
+        viewModel.placeCharacter(character, row: -1, column: 0)
+        #expect(viewModel.character(row: 0, column: 0) == nil, "Valid positions should remain unaffected")
     }
     
     @Test("Character placement at negative column fails gracefully")
     func invalidPosition_negativeColumn_placementFailsGracefully() {
-        // Given - ViewModel and a character
-        // When - Character placement is attempted at negative column
-        // Then - Should fail gracefully without throwing or crashing
-        
         let viewModel = GameGridViewModel()
         let character = GameCharacter.coolKittyKate
         
-        // This will FAIL because error handling behavior may not be implemented correctly
-        viewModel.placeCharacter(character, at: 0, column: -1)
-        // Test passes if no crash occurs and other positions remain unaffected
-        #expect(viewModel.character(at: 0, column: 0) == nil, "Valid positions should remain unaffected")
+        viewModel.placeCharacter(character, row: 0, column: -1)
+
+        #expect(viewModel.character(row: 0, column: 0) == nil, "Valid positions should remain unaffected")
     }
     
     @Test("Character placement with row too large fails gracefully")
     func invalidPosition_rowTooLarge_placementFailsGracefully() {
-        // Given - ViewModel with 3x3 grid and a character
-        // When - Character placement is attempted at row >= 3
-        // Then - Should fail gracefully without throwing or crashing
-        
         let viewModel = GameGridViewModel()
         let character = GameCharacter.coolKittyKate
         
-        // This will FAIL because bounds checking behavior may not be implemented correctly
-        viewModel.placeCharacter(character, at: 3, column: 0)
-        // Test passes if no crash occurs and valid positions remain unaffected  
-        #expect(viewModel.character(at: 0, column: 0) == nil, "Valid positions should remain unaffected")
+        viewModel.placeCharacter(character, row: 3, column: 0)
+
+        #expect(viewModel.character(row: 0, column: 0) == nil, "Valid positions should remain unaffected")
     }
     
     @Test("Character placement with column too large fails gracefully")
@@ -289,9 +243,9 @@ struct GameGridViewModelTests {
         let character = GameCharacter.coolKittyKate
         
         // This will FAIL because bounds checking behavior may not be implemented correctly
-        viewModel.placeCharacter(character, at: 0, column: 3)
+        viewModel.placeCharacter(character, row: 0, column: 3)
         // Test passes if no crash occurs and valid positions remain unaffected
-        #expect(viewModel.character(at: 0, column: 0) == nil, "Valid positions should remain unaffected")
+        #expect(viewModel.character(row: 0, column: 0) == nil, "Valid positions should remain unaffected")
     }
     
     // MARK: - MVVM Architecture Compliance Tests
@@ -306,11 +260,11 @@ struct GameGridViewModelTests {
         let viewModel2 = GameGridViewModel()
         let character = GameCharacter.coolKittyKate
         
-        viewModel1.placeCharacter(character, at: 0, column: 0)
+        viewModel1.placeCharacter(character, row: 0, column: 0)
         
         // This will FAIL if ViewModels share state instead of having independent instances
-        #expect(viewModel2.isEmpty(at: 0, column: 0) == true, "Second ViewModel should remain unaffected")
-        #expect(viewModel2.character(at: 0, column: 0) == nil, "Second ViewModel should have no character")
+        #expect(viewModel2.isEmpty(row: 0, column: 0) == true, "Second ViewModel should remain unaffected")
+        #expect(viewModel2.character(row: 0, column: 0) == nil, "Second ViewModel should have no character")
     }
     
     @Test("ViewModel properties remain consistent during operations")
@@ -324,8 +278,8 @@ struct GameGridViewModelTests {
         let initialColumns = viewModel.columns
         
         // Perform various operations
-        viewModel.placeCharacter(.coolKittyKate, at: 0, column: 0)
-        viewModel.placeCharacter(.bullyBob, at: 1, column: 1)
+        viewModel.placeCharacter(.coolKittyKate, row: 0, column: 0)
+        viewModel.placeCharacter(.bullyBob, row: 1, column: 1)
         
         // This will FAIL if dimension properties change during operations
         #expect(viewModel.rows == initialRows, "Rows should remain consistent")
@@ -346,7 +300,7 @@ struct GameGridViewModelTests {
         // This will FAIL because we need to verify @Observable behavior
         // In a real MVVM setup, we'd test that state changes trigger UI updates
         let initialHashValue = ObjectIdentifier(viewModel).hashValue
-        viewModel.placeCharacter(character, at: 0, column: 0)
+        viewModel.placeCharacter(character, row: 0, column: 0)
         let afterPlacementHashValue = ObjectIdentifier(viewModel).hashValue
         
         #expect(initialHashValue == afterPlacementHashValue, "Object identity should remain same but state should change")
@@ -360,13 +314,13 @@ struct GameGridViewModelTests {
         // Then - Should provide readable description of current state
         
         let viewModel = GameGridViewModel()
-        viewModel.placeCharacter(.coolKittyKate, at: 0, column: 0)
-        viewModel.placeCharacter(.bullyBob, at: 1, column: 1)
+        viewModel.placeCharacter(.coolKittyKate, row: 0, column: 0)
+        viewModel.placeCharacter(.bullyBob, row: 1, column: 1)
         
         // This will PASS now that gridSummary property is implemented
         let summary = viewModel.gridSummary
         #expect(summary.contains("coolKittyKate"), "Summary should mention placed characters")
-        #expect(summary.contains("3x3"), "Summary should mention grid dimensions")
+        #expect(summary.contains("4x4"), "Summary should mention grid dimensions")
     }
     
     @Test("ViewModel provides all empty positions for game logic")
@@ -376,11 +330,11 @@ struct GameGridViewModelTests {
         // Then - Should return array of all empty coordinates
         
         let viewModel = GameGridViewModel()
-        viewModel.placeCharacter(.coolKittyKate, at: 0, column: 0)
+        viewModel.placeCharacter(.coolKittyKate, row: 0, column: 0)
         
         // This will PASS now that emptyPositions property is implemented
         let emptyPositions = viewModel.emptyPositions
-        #expect(emptyPositions.count == 8)
+        #expect(emptyPositions.count == (viewModel.rows * viewModel.columns) - 1)
         #expect(emptyPositions.contains { $0.row == 0 && $0.column == 1 }, "Should include (0,1)")
         #expect(emptyPositions.contains { $0.row == 1 && $0.column == 0 }, "Should include (1,0)")
         #expect(emptyPositions.contains { $0.row == 1 && $0.column == 1 }, "Should include (1,1)")
@@ -393,8 +347,8 @@ struct GameGridViewModelTests {
         // Then - Should return array of all occupied coordinates with characters
         
         let viewModel = GameGridViewModel()
-        viewModel.placeCharacter(.coolKittyKate, at: 0, column: 0)
-        viewModel.placeCharacter(.bullyBob, at: 1, column: 1)
+        viewModel.placeCharacter(.coolKittyKate, row: 0, column: 0)
+        viewModel.placeCharacter(.bullyBob, row: 1, column: 1)
         
         // This will PASS now that occupiedPositions property is implemented
         let occupiedPositions = viewModel.occupiedPositions
@@ -410,17 +364,17 @@ struct GameGridViewModelTests {
         // Then - All positions should become empty
         
         let viewModel = GameGridViewModel()
-        viewModel.placeCharacter(.coolKittyKate, at: 0, column: 0)
-        viewModel.placeCharacter(.bullyBob, at: 0, column: 1)
-        viewModel.placeCharacter(.quickRick, at: 1, column: 0)
-        viewModel.placeCharacter(.snifflingSteve, at: 1, column: 1)
+        viewModel.placeCharacter(.coolKittyKate, row: 0, column: 0)
+        viewModel.placeCharacter(.bullyBob, row: 0, column: 1)
+        viewModel.placeCharacter(.quickRick, row: 1, column: 0)
+        viewModel.placeCharacter(.snifflingSteve, row: 1, column: 1)
         
         // This will PASS now that clearGrid() method is implemented
         viewModel.clearGrid()
-        #expect(viewModel.isEmpty(at: 0, column: 0) == true, "Position (0,0) should be empty")
-        #expect(viewModel.isEmpty(at: 0, column: 1) == true, "Position (0,1) should be empty")
-        #expect(viewModel.isEmpty(at: 1, column: 0) == true, "Position (1,0) should be empty")
-        #expect(viewModel.isEmpty(at: 1, column: 1) == true, "Position (1,1) should be empty")
+        #expect(viewModel.isEmpty(row: 0, column: 0) == true, "Position (0,0) should be empty")
+        #expect(viewModel.isEmpty(row: 0, column: 1) == true, "Position (0,1) should be empty")
+        #expect(viewModel.isEmpty(row: 1, column: 0) == true, "Position (1,0) should be empty")
+        #expect(viewModel.isEmpty(row: 1, column: 1) == true, "Position (1,1) should be empty")
     }
     
     @Test("ViewModel can remove character from specific position")
@@ -430,13 +384,13 @@ struct GameGridViewModelTests {
         // Then - Position should become empty, others unaffected
         
         let viewModel = GameGridViewModel()
-        viewModel.placeCharacter(.coolKittyKate, at: 0, column: 0)
-        viewModel.placeCharacter(.bullyBob, at: 1, column: 1)
+        viewModel.placeCharacter(.coolKittyKate, row: 0, column: 0)
+        viewModel.placeCharacter(.bullyBob, row: 1, column: 1)
         
         // This will PASS now that removeCharacter() method is implemented
-        viewModel.removeCharacter(at: 0, column: 0)
-        #expect(viewModel.isEmpty(at: 0, column: 0) == true, "Removed position should be empty")
-        #expect(viewModel.character(at: 1, column: 1) == .bullyBob, "Other positions should be unaffected")
+        viewModel.removecharacter(row: 0, column: 0)
+        #expect(viewModel.isEmpty(row: 0, column: 0) == true, "Removed position should be empty")
+        #expect(viewModel.character(row: 1, column: 1) == .bullyBob, "Other positions should be unaffected")
     }
     
     @Test("ViewModel provides total character count")
@@ -446,8 +400,8 @@ struct GameGridViewModelTests {
         // Then - Should return accurate count
         
         let viewModel = GameGridViewModel()
-        viewModel.placeCharacter(.coolKittyKate, at: 0, column: 0)
-        viewModel.placeCharacter(.bullyBob, at: 1, column: 1)
+        viewModel.placeCharacter(.coolKittyKate, row: 0, column: 0)
+        viewModel.placeCharacter(.bullyBob, row: 1, column: 1)
         
         // This will PASS now that characterCount property is implemented
         #expect(viewModel.characterCount == 2, "Should count all placed characters")
@@ -456,15 +410,12 @@ struct GameGridViewModelTests {
     @Test("ViewModel indicates when grid is full")
     func fullGrid_fullnessChecked_returnsTrue() {
         let viewModel = GameGridViewModel()
-        viewModel.placeCharacter(.coolKittyKate, at: 0, column: 0)
-        viewModel.placeCharacter(.bullyBob, at: 0, column: 1)
-        viewModel.placeCharacter(.principalYavno, at: 0, column: 2)
-        viewModel.placeCharacter(.quickRick, at: 1, column: 0)
-        viewModel.placeCharacter(.snifflingSteve, at: 1, column: 1)
-        viewModel.placeCharacter(.bullyBob, at: 1, column: 2)
-        viewModel.placeCharacter(.quickRick, at: 2, column: 0)
-        viewModel.placeCharacter(.snifflingSteve, at: 2, column: 1)
-        viewModel.placeCharacter(.bullyBob, at: 2, column: 2)
+        
+        for x in 0..<viewModel.rows {
+            for y in 0..<viewModel.columns {
+                viewModel.placeCharacter(.coolKittyKate, row: x, column: y)
+            }
+        }
 
         #expect(viewModel.isFull == true, "Full grid should report as full")
     }

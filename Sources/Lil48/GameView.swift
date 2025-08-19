@@ -14,8 +14,8 @@ public struct GameView: View {
                         HStack(spacing: 2) {
                             ForEach(0..<viewModel.columns, id: \.self) { column in
                                 GridTileView(
-                                    character: viewModel.character(at: row, column: column),
-                                    isEmpty: viewModel.isEmpty(at: row, column: column)
+                                    character: viewModel.character(row: row, column: column),
+                                    isEmpty: viewModel.isEmpty(row: row, column: column)
                                 )
                             }
                         }

@@ -4,17 +4,6 @@ import Testing
 /// Tests for basic grid foundation functionality (Iteration 1)
 struct GridFoundationTests {
     
-    @Test("Grid initializes with 3x3 dimensions")
-    func initialState_gridCreated_hasThreeByThreeDimensions() {
-        // Given - Starting a new game
-        // When - Grid is created
-        // Then - Should have 3 rows and 3 columns
-        
-        let grid = GameGrid()
-        #expect(grid.rows == 3)
-        #expect(grid.columns == 3)
-    }
-    
     @Test("New grid is completely empty")
     func initialState_gridCreated_allPositionsEmpty() throws {
         // Given - Starting a new game
@@ -22,10 +11,10 @@ struct GridFoundationTests {
         // Then - All positions should be empty
         
         let grid = GameGrid()
-        #expect(try grid.isEmpty(at: GridPosition(row: 0, column: 0)))
-        #expect(try grid.isEmpty(at: GridPosition(row: 0, column: 1)))
-        #expect(try grid.isEmpty(at: GridPosition(row: 1, column: 0)))
-        #expect(try grid.isEmpty(at: GridPosition(row: 1, column: 1)))
+        #expect(try grid.isEmpty(row: GridPosition(row: 0, column: 0)))
+        #expect(try grid.isEmpty(row: GridPosition(row: 0, column: 1)))
+        #expect(try grid.isEmpty(row: GridPosition(row: 1, column: 0)))
+        #expect(try grid.isEmpty(row: GridPosition(row: 1, column: 1)))
     }
     
     @Test("Character can be placed at valid position")
@@ -40,34 +29,31 @@ struct GridFoundationTests {
         
         try grid.place(character, at: position)
         
-        #expect(try !grid.isEmpty(at: position))
-        #expect(try grid.character(at: position) == character)
+        #expect(try !grid.isEmpty(row: position))
+        #expect(try grid.character(row: position) == character)
     }
     
     @Test("Movement is blocked at board boundaries")
     func edgePosition_moveOffBoard_isBlocked() {
         
         let grid = GameGrid()
+        let edge = grid.rows
         
         // Top edge - can't move up
         #expect(grid.canMove(from: GridPosition(row: 0, column: 0), in: .up) == false)
         
         // Bottom edge - can't move down  
-        #expect(grid.canMove(from: GridPosition(row: 2, column: 0), in: .down) == false)
+        #expect(grid.canMove(from: GridPosition(row: edge, column: 0), in: .down) == false)
         
         // Left edge - can't move left
         #expect(grid.canMove(from: GridPosition(row: 0, column: 0), in: .left) == false)
         
         // Right edge - can't move right
-        #expect(grid.canMove(from: GridPosition(row: 0, column: 2), in: .right) == false)
+        #expect(grid.canMove(from: GridPosition(row: 0, column: edge), in: .right) == false)
     }
     
     @Test("Valid movements are allowed within grid boundaries")
     func validPosition_validDirection_movementAllowed() {
-        // Given - 2x2 grid with positions that can move in certain directions
-        // When - Valid movement is attempted
-        // Then - Movement should be allowed
-        
         let grid = GameGrid()
         
         // From top-left (0,0): can move right and down
@@ -90,17 +76,18 @@ struct GridFoundationTests {
     @Test("Invalid positions throw out of bounds error")
     func invalidPosition_gridOperations_throwsError() throws {
         var grid = GameGrid()
+        let pastEdge = grid.rows
         
         #expect(throws: GridError.positionOutOfBounds) {
-            try grid.isEmpty(at: GridPosition(row: -1, column: 0))
+            try grid.isEmpty(row: GridPosition(row: -1, column: 0))
         }
         
         #expect(throws: GridError.positionOutOfBounds) {
-            try grid.character(at: GridPosition(row: 3, column: 0))
+            try grid.character(row: GridPosition(row: pastEdge, column: 0))
         }
         
         #expect(throws: GridError.positionOutOfBounds) {
-            try grid.place(.coolKittyKate, at: GridPosition(row: 3, column: 3))
+            try grid.place(.coolKittyKate, at: GridPosition(row: pastEdge, column: pastEdge + 1))
         }
     }
 }

@@ -26,11 +26,11 @@ struct GridView: View {
             ForEach(0..<viewModel.rows, id: \.self) { row in
                 ForEach(0..<viewModel.columns, id: \.self) { column in
                     GridCellView(
-                        character: viewModel.character(at: row, column: column),
+                        character: viewModel.character(row: row, column: column),
                         row: row,
                         column: column,
                         onTap: { row, column in
-                            viewModel.placeCharacter(.coolKittyKate, at: row, column: column)
+                            viewModel.placeCharacter(.coolKittyKate, row: row, column: column)
                         }
                     )
                 }

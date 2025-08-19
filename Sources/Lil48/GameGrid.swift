@@ -35,8 +35,8 @@ public enum MovementDirection {
 
 struct GameGrid {
     private enum Constants {
-        static let defaultSize = 3
-        static let maxSize = 5
+        static let defaultSize = 4
+        static let maxSize = 9
     }
     
     private var tiles: [[GameCharacter?]]
@@ -55,7 +55,7 @@ struct GameGrid {
         position.column >= 0 && position.column < columns
     }
     
-    func isEmpty(at position: GridPosition) throws -> Bool {
+    func isEmpty(row position: GridPosition) throws -> Bool {
         guard isValidPosition(position) else { throw GridError.positionOutOfBounds }
         return tiles[position.row][position.column] == nil
     }
@@ -65,12 +65,12 @@ struct GameGrid {
         tiles[position.row][position.column] = character
     }
     
-    func character(at position: GridPosition) throws -> GameCharacter? {
+    func character(row position: GridPosition) throws -> GameCharacter? {
         guard isValidPosition(position) else { throw GridError.positionOutOfBounds }
         return tiles[position.row][position.column]
     }
     
-    mutating func removeCharacter(at position: GridPosition) throws {
+    mutating func removecharacter(row position: GridPosition) throws {
         guard isValidPosition(position) else { throw GridError.positionOutOfBounds }
         tiles[position.row][position.column] = nil
     }
@@ -230,7 +230,7 @@ struct GameGrid {
     mutating func expandGrid() -> Bool {
         guard currentSize < Constants.maxSize else { return false }
         
-        let newSize = currentSize + 1
+        let newSize = self.currentSize + 1
         var newTiles = Array(repeating: Array(repeating: nil as GameCharacter?, count: newSize), count: newSize)
         
         for row in 0..<currentSize {
