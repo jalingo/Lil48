@@ -117,4 +117,12 @@ public class GameGridViewModel {
     public func spawnInitialCharacter() {
         _ = gameGrid.spawnInitialCharacter()
     }
+    
+    public var gameState: GameState {
+        return gameGrid.gameState
+    }
+    
+    public func startNewGame() {
+        gameGrid = GameGrid()
+    }
 }

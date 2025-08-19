@@ -388,4 +388,57 @@ struct GameGridViewModelTests {
         
         #expect(viewModel.isEmpty == true)
     }
+    
+    @Test("ViewModel exposes playing game state")
+    func playingGame_gameStateQueried_returnsPlaying() throws {
+        let viewModel = try GameGridViewModel.createEmpty()
+        viewModel.placeCharacter(.coolKittyKate, row: 0, column: 0)
+        
+        #expect(viewModel.gameState == .playing)
+    }
+    
+    @Test("ViewModel exposes victory game state when empty")
+    func emptyGrid_gameStateQueried_returnsVictory() throws {
+        let viewModel = try GameGridViewModel.createEmpty()
+        
+        #expect(viewModel.gameState == .victory)
+    }
+    
+    @Test("ViewModel exposes loss game state when full with no moves") 
+    func fullGridNoMoves_gameStateQueried_returnsLoss() throws {
+        let viewModel = try GameGridViewModel.createEmpty()
+        
+        viewModel.placeCharacter(.coolKittyKate, row: 0, column: 0)
+        viewModel.placeCharacter(.bullyBob, row: 0, column: 1) 
+        viewModel.placeCharacter(.quickRick, row: 0, column: 2)
+        viewModel.placeCharacter(.snifflingSteve, row: 0, column: 3)
+        viewModel.placeCharacter(.principalYavno, row: 1, column: 0)
+        viewModel.placeCharacter(.superCoolKittyKate, row: 1, column: 1)
+        viewModel.placeCharacter(.coolKittyKate, row: 1, column: 2)
+        viewModel.placeCharacter(.bullyBob, row: 1, column: 3)
+        viewModel.placeCharacter(.quickRick, row: 2, column: 0)
+        viewModel.placeCharacter(.snifflingSteve, row: 2, column: 1)
+        viewModel.placeCharacter(.principalYavno, row: 2, column: 2)
+        viewModel.placeCharacter(.superCoolKittyKate, row: 2, column: 3)
+        viewModel.placeCharacter(.coolKittyKate, row: 3, column: 0)
+        viewModel.placeCharacter(.bullyBob, row: 3, column: 1)
+        viewModel.placeCharacter(.quickRick, row: 3, column: 2)
+        viewModel.placeCharacter(.snifflingSteve, row: 3, column: 3)
+        
+        #expect(viewModel.gameState == .loss)
+    }
+    
+    @Test("ViewModel provides new game functionality")
+    func newGameRequested_startNewGame_resetsGridWithInitialCharacter() throws {
+        let viewModel = try GameGridViewModel.createEmpty()
+        viewModel.placeCharacter(.coolKittyKate, row: 0, column: 0)
+        viewModel.placeCharacter(.bullyBob, row: 1, column: 1)
+        
+        #expect(viewModel.characterCount == 2)
+        
+        viewModel.startNewGame()
+        
+        #expect(viewModel.characterCount == 1)
+        #expect(viewModel.gameState == .playing)
+    }
 }

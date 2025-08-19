@@ -30,6 +30,14 @@ public struct GameView: View {
                             handleSwipe(value)
                         }
                 )
+                .overlay(
+                    GameStateOverlay(
+                        gameState: viewModel.gameState,
+                        onNewGame: {
+                            viewModel.startNewGame()
+                        }
+                    )
+                )
                 
                 // Game Info
                 VStack(alignment: .leading, spacing: 8) {
