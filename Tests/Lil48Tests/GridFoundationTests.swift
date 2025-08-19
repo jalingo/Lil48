@@ -90,4 +90,55 @@ struct GridFoundationTests {
             try grid.place(.coolKittyKate, at: GridPosition(row: pastEdge, column: pastEdge + 1))
         }
     }
+    
+    @Test("New grid starts with initial character")
+    func newGrid_initialization_hasInitialCharacter() throws {
+        let grid = GameGrid()
+        
+        #expect(grid.characterCount == 1)
+        #expect(grid.gameState == .playing)
+    }
+    
+    @Test("Empty grid after clearing all characters is victory")
+    func clearedGrid_gameState_isVictory() throws {
+        var grid = GameGrid()
+        
+        // Clear the initial character to simulate victory
+        let occupiedPositions = grid.occupiedPositions
+        if let position = occupiedPositions.first {
+            try grid.removecharacter(row: position)
+        }
+        
+        #expect(grid.characterCount == 0)
+        #expect(grid.gameState == .victory)
+    }
+    
+    @Test("Full grid with no moves is loss")
+    func fullGridNoMoves_gameState_isLoss() throws {
+        var grid = GameGrid()
+        
+        // Fill grid with alternating characters so no merges are possible
+        for row in 0..<grid.rows {
+            for col in 0..<grid.columns {
+                let character: GameCharacter = (row + col) % 2 == 0 ? .coolKittyKate : .bullyBob
+                try grid.place(character, at: GridPosition(row: row, column: col))
+            }
+        }
+        
+        #expect(grid.gameState == .loss)
+    }
+    
+    @Test("Full grid with merge available continues")
+    func fullGridWithMerge_gameState_isContinue() throws {
+        var grid = GameGrid()
+        
+        // Fill grid with same characters so merges are possible
+        for row in 0..<grid.rows {
+            for col in 0..<grid.columns {
+                try grid.place(.coolKittyKate, at: GridPosition(row: row, column: col))
+            }
+        }
+        
+        #expect(grid.gameState == .playing)
+    }
 }

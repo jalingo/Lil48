@@ -33,6 +33,12 @@ public enum MovementDirection {
     case up, down, left, right
 }
 
+public enum GameState {
+    case victory
+    case loss
+    case playing
+}
+
 struct GameGrid {
     private enum Constants {
         static let defaultSize = 4
@@ -50,6 +56,11 @@ struct GameGrid {
     init() {
         currentSize = Constants.defaultSize
         tiles = Array(repeating: Array(repeating: nil, count: Constants.defaultSize), count: Constants.defaultSize)
+        
+        // Place initial character at random position
+        let randomRow = Int.random(in: 0..<Constants.defaultSize)
+        let randomCol = Int.random(in: 0..<Constants.defaultSize)
+        tiles[randomRow][randomCol] = .coolKittyKate
     }
     
     private func isValidPosition(_ position: GridPosition) -> Bool {
@@ -334,5 +345,44 @@ struct GameGrid {
             }
         }
         return positions
+    }
+    
+    var gameState: GameState {
+        if characterCount == 0 {
+            return .victory
+        }
+        
+        if emptyPositions.isEmpty && !hasMovesAvailable() {
+            return .loss
+        }
+        
+        return .playing
+    }
+    
+    private func hasMovesAvailable() -> Bool {
+        for row in 0..<currentSize {
+            for col in 0..<currentSize {
+                if let character = tiles[row][col] {
+                    // Check right neighbor
+                    if col < currentSize - 1 {
+                        if let rightNeighbor = tiles[row][col + 1] {
+                            if character == rightNeighbor {
+                                return true
+                            }
+                        }
+                    }
+                    
+                    // Check down neighbor  
+                    if row < currentSize - 1 {
+                        if let downNeighbor = tiles[row + 1][col] {
+                            if character == downNeighbor {
+                                return true
+                            }
+                        }
+                    }
+                }
+            }
+        }
+        return false
     }
 }
