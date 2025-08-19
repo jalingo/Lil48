@@ -42,12 +42,12 @@ struct GameGridViewModelTests {
     // MARK: - Character Placement Tests
     
     @Test("Valid character placement updates grid state correctly")
-    func emptyPosition_characterPlaced_positionStateUpdates() {
+    func emptyPosition_characterPlaced_positionStateUpdates() throws {
         // Given - Empty ViewModel and a character
         // When - Character is placed at valid position
         // Then - Position should no longer be empty and should contain the character
         
-        let viewModel = GameGridViewModel()
+        let viewModel = try GameGridViewModel.createEmpty()
         let character = GameCharacter.coolKittyKate
         let row = 0
         let column = 0
@@ -60,12 +60,12 @@ struct GameGridViewModelTests {
     }
     
     @Test("Multiple character placements work correctly")
-    func emptyGrid_multipleCharactersPlaced_allPositionsUpdateCorrectly() {
+    func emptyGrid_multipleCharactersPlaced_allPositionsUpdateCorrectly() throws {
         // Given - Empty ViewModel and multiple different characters
         // When - Characters are placed at different positions
         // Then - Each position should contain its respective character
         
-        let viewModel = GameGridViewModel()
+        let viewModel = try GameGridViewModel.createEmpty()
         let character1 = GameCharacter.coolKittyKate
         let character2 = GameCharacter.bullyBob
         let character3 = GameCharacter.quickRick
@@ -130,37 +130,26 @@ struct GameGridViewModelTests {
     }
     
     @Test("Character query with row too large returns nil gracefully")
-    func invalidPosition_rowTooLarge_characterQueryReturnsNil() {
-        // Given - ViewModel with 3x3 grid
-        // When - Character is queried at row >= 3
-        // Then - Should return nil gracefully (not throw)
+    func invalidPosition_rowTooLarge_characterQueryReturnsNil() throws {
+        let viewModel = try GameGridViewModel.createEmpty()
+        let outOfBounds = viewModel.rows + 1
         
-        let viewModel = GameGridViewModel()
-        
-        // This will FAIL because bounds checking behavior may not be implemented correctly
-        let result = viewModel.character(row: 3, column: 0)
+        let result = viewModel.character(row: outOfBounds, column: 0)
         #expect(result == nil, "Row out of bounds should return nil gracefully")
     }
     
     @Test("Character query with column too large returns nil gracefully")
-    func invalidPosition_columnTooLarge_characterQueryReturnsNil() {
-        // Given - ViewModel with 3x3 grid  
-        // When - Character is queried at column >= 3
-        // Then - Should return nil gracefully (not throw)
-        
-        let viewModel = GameGridViewModel()
-        
+    func invalidPosition_columnTooLarge_characterQueryReturnsNil() throws {
+        let viewModel = try GameGridViewModel.createEmpty()
+        let outOfBounds = viewModel.columns + 1
+
         // This will FAIL because bounds checking behavior may not be implemented correctly
-        let result = viewModel.character(row: 0, column: 3)
+        let result = viewModel.character(row: 0, column: outOfBounds)
         #expect(result == nil, "Column out of bounds should return nil gracefully")
     }
     
     @Test("Empty check with negative row returns false gracefully")
     func invalidPosition_negativeRow_emptyCheckReturnsFalse() {
-        // Given - ViewModel with any state
-        // When - Empty check is performed at negative row
-        // Then - Should return false gracefully (not throw)
-        
         let viewModel = GameGridViewModel()
         
         // This will FAIL because error handling behavior may not be implemented correctly
@@ -170,10 +159,6 @@ struct GameGridViewModelTests {
     
     @Test("Empty check with negative column returns false gracefully")
     func invalidPosition_negativeColumn_emptyCheckReturnsFalse() {
-        // Given - ViewModel with any state
-        // When - Empty check is performed at negative column  
-        // Then - Should return false gracefully (not throw)
-        
         let viewModel = GameGridViewModel()
         
         // This will FAIL because error handling behavior may not be implemented correctly
@@ -194,14 +179,14 @@ struct GameGridViewModelTests {
     func invalidPosition_columnTooLarge_emptyCheckReturnsFalse() {
         let viewModel = GameGridViewModel()
         
-        let result = viewModel.isEmpty(row: 0, column: viewModel.rows)
+        let result = viewModel.isEmpty(row: 0, column: viewModel.columns)
 
         #expect(result == false)
     }
     
     @Test("Character placement at negative row fails gracefully")
-    func invalidPosition_negativeRow_placementFailsGracefully() {
-        let viewModel = GameGridViewModel()
+    func invalidPosition_negativeRow_placementFailsGracefully() throws {
+        let viewModel = try GameGridViewModel.createEmpty()
         let character = GameCharacter.coolKittyKate
         
         viewModel.placeCharacter(character, row: -1, column: 0)
@@ -209,8 +194,8 @@ struct GameGridViewModelTests {
     }
     
     @Test("Character placement at negative column fails gracefully")
-    func invalidPosition_negativeColumn_placementFailsGracefully() {
-        let viewModel = GameGridViewModel()
+    func invalidPosition_negativeColumn_placementFailsGracefully() throws {
+        let viewModel = try GameGridViewModel.createEmpty()
         let character = GameCharacter.coolKittyKate
         
         viewModel.placeCharacter(character, row: 0, column: -1)
@@ -229,30 +214,21 @@ struct GameGridViewModelTests {
     }
     
     @Test("Character placement with column too large fails gracefully")
-    func invalidPosition_columnTooLarge_placementFailsGracefully() {
-        // Given - ViewModel with 3x3 grid and a character
-        // When - Character placement is attempted at column >= 3
-        // Then - Should fail gracefully without throwing or crashing
-        
-        let viewModel = GameGridViewModel()
+    func invalidPosition_columnTooLarge_placementFailsGracefully() throws {
+        let viewModel = try GameGridViewModel.createEmpty()
         let character = GameCharacter.coolKittyKate
         
-        // This will FAIL because bounds checking behavior may not be implemented correctly
-        viewModel.placeCharacter(character, row: 0, column: 3)
-        // Test passes if no crash occurs and valid positions remain unaffected
+        viewModel.placeCharacter(character, row: 0, column: viewModel.columns)
+
         #expect(viewModel.character(row: 0, column: 0) == nil, "Valid positions should remain unaffected")
     }
     
     // MARK: - MVVM Architecture Compliance Tests
     
     @Test("ViewModel maintains independent state from model")
-    func separateInstances_independentOperations_maintainSeparateState() {
-        // Given - Two separate ViewModel instances
-        // When - Different operations are performed on each
-        // Then - Each should maintain independent state
-        
-        let viewModel1 = GameGridViewModel()
-        let viewModel2 = GameGridViewModel()
+    func separateInstances_independentOperations_maintainSeparateState() throws {
+        let viewModel1 = try GameGridViewModel.createEmpty()
+        let viewModel2 = try GameGridViewModel.createEmpty()
         let character = GameCharacter.coolKittyKate
         
         viewModel1.placeCharacter(character, row: 0, column: 0)

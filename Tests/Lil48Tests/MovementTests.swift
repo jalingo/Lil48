@@ -9,7 +9,7 @@ struct MovementTests {
         let edge = grid.columns
         try grid.place(.coolKittyKate, at: GridPosition(row: 0, column: 0))
         
-        let result = grid.move(direction: .right)
+        let result = grid.move(direction: .right, allowSpawning: false)
         
         #expect(result == true)
         #expect(try grid.character(row: GridPosition(row: 0, column: edge - 1)) == .coolKittyKate)
@@ -23,7 +23,7 @@ struct MovementTests {
         let edge = grid.columns - 1
         try grid.place(.coolKittyKate, at: GridPosition(row: 0, column: edge))
         
-        let result = grid.move(direction: .right)
+        let result = grid.move(direction: .right, allowSpawning: false)
         
         #expect(result == false)
         #expect(try grid.character(row: GridPosition(row: 0, column: edge)) == .coolKittyKate)
@@ -36,7 +36,7 @@ struct MovementTests {
         try grid.place(.coolKittyKate, at: GridPosition(row: 0, column: 0))
         try grid.place(.bullyBob, at: GridPosition(row: 1, column: 0))
         
-        let result = grid.move(direction: .right)
+        let result = grid.move(direction: .right, allowSpawning: false)
         
         #expect(result == true)
         #expect(try grid.character(row: GridPosition(row: 0, column: edge)) == .coolKittyKate)
@@ -49,7 +49,7 @@ struct MovementTests {
         var grid = try GameGrid.createEmpty()
         try grid.place(.coolKittyKate, at: GridPosition(row: 1, column: 0))
         
-        let result = grid.move(direction: .up)
+        let result = grid.move(direction: .up, allowSpawning: false)
         
         #expect(result == true)
         #expect(try grid.isEmpty(row: GridPosition(row: 1, column: 0)))
@@ -60,10 +60,10 @@ struct MovementTests {
     func emptyGrid_moveAnyDirection_returnsFalse() throws {
         var grid = try GameGrid.createEmpty()
         
-        let resultRight = grid.move(direction: .right)
-        let resultLeft = grid.move(direction: .left)
-        let resultUp = grid.move(direction: .up)
-        let resultDown = grid.move(direction: .down)
+        let resultRight = grid.move(direction: .right, allowSpawning: false)
+        let resultLeft = grid.move(direction: .left, allowSpawning: false)
+        let resultUp = grid.move(direction: .up, allowSpawning: false)
+        let resultDown = grid.move(direction: .down, allowSpawning: false)
         
         #expect(resultRight == false)
         #expect(resultLeft == false) 
@@ -73,12 +73,12 @@ struct MovementTests {
     
     @Test("Character blocked by another character stops before collision")
     func characterBlockedByAnother_movesRight_stopsBeforeCollision() throws {
-        var grid = GameGrid()
+        var grid = try GameGrid.createEmpty()
         let edge = grid.columns - 1
         try grid.place(.coolKittyKate, at: GridPosition(row: 0, column: 0))
         try grid.place(.bullyBob, at: GridPosition(row: 0, column: 1))
         
-        let result = grid.move(direction: .right)
+        let result = grid.move(direction: .right, allowSpawning: false)
         
         #expect(result == true)
         #expect(try grid.character(row: GridPosition(row: 0, column: edge - 1)) == .coolKittyKate)
@@ -92,7 +92,7 @@ struct MovementTests {
         try grid.place(.coolKittyKate, at: GridPosition(row: 0, column: 0))
         try grid.place(.coolKittyKate, at: GridPosition(row: 0, column: 1))
         
-        let result = grid.move(direction: .right)
+        let result = grid.move(direction: .right, allowSpawning: false)
         
         #expect(result == true)
         #expect(try grid.character(row: GridPosition(row: 0, column: edge)) == .bullyBob)
@@ -106,7 +106,7 @@ struct MovementTests {
         try grid.place(.coolKittyKate, at: GridPosition(row: 0, column: 1))
         try grid.place(.bullyBob, at: GridPosition(row: 0, column: 2))
         
-        let result = grid.move(direction: .right)
+        let result = grid.move(direction: .right, allowSpawning: false)
         
         #expect(result == true)
         // Two Bully Bobs should exist separately (no cascading merge in same move)

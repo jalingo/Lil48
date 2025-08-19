@@ -97,7 +97,7 @@ struct GameGrid {
         }
     }
     
-    mutating func move(direction: MovementDirection) -> Bool {
+    mutating func move(direction: MovementDirection, allowSpawning: Bool = true) -> Bool {
         var hasMovement = false
         var resultTiles = tiles
         var shouldExpandGrid = false
@@ -131,7 +131,7 @@ struct GameGrid {
             
             let spawnChance = calculateSpawnChance()
             let randomValue = Double.random(in: 0...1)
-            if randomValue < spawnChance {
+            if randomValue < spawnChance && allowSpawning {
                 _ = spawnCharacter()
             }
         }

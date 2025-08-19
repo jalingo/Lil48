@@ -25,7 +25,7 @@ struct GridExpansionTests {
     
     @Test("Existing characters remain in same positions after expansion")
     func gridWithCharacters_expandGrid_preservesCharacterPositions() throws {
-        var grid = GameGrid()
+        var grid = try GameGrid.createEmpty()
         try grid.place(.coolKittyKate, at: GridPosition(row: 0, column: 0))
         try grid.place(.bullyBob, at: GridPosition(row: 1, column: 1))
         

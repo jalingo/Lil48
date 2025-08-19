@@ -131,12 +131,13 @@ struct CharacterSpawningTests {
     
     @Test("Expanded grid spawns character using adaptive logic")
     func expandedGrid_spawnCharacter_usesAdaptiveCharacterSelection() throws {
-        var grid = GameGrid()
+        var grid = try GameGrid.createEmpty()
         _ = grid.expandGrid()
         
         var spawnedCharacters: Set<GameCharacter> = []
         
-        for _ in 0..<50 {
+        // Use more iterations to ensure statistical reliability
+        for _ in 0..<200 {
             var testGrid = grid
             let spawned = testGrid.spawnCharacter()
             #expect(spawned == true)
@@ -155,7 +156,7 @@ struct CharacterSpawningTests {
     
     @Test("Character spawns in random empty positions")
     func partiallyFilledGrid_spawnCharacter_usesRandomEmptyPosition() throws {
-        var grid = GameGrid()
+        var grid = try GameGrid.createEmpty()
         try grid.place(.bullyBob, at: GridPosition(row: 1, column: 1))
         try grid.place(.quickRick, at: GridPosition(row: 2, column: 2))
         
