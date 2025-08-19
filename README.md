@@ -29,6 +29,15 @@ swift run Lil48App
 
 ## Changes
 
+19 Aug 2025: Victory/Game Over UI Notifications System
+- Add GameStateOverlay component with victory ("You Won!") and loss ("Game Over") messaging
+- Integrate overlay into GameView that completely replaces tile grid when game ends
+- Add ViewModel gameState property exposing victory/loss/playing states to UI
+- Add startNewGame functionality with "Play Again" button for game resets
+- Implement semi-transparent black overlay with context-appropriate styling (green for victory, red for loss)
+- Add comprehensive test coverage with 4 overlay component tests and 4 ViewModel tests
+- Update TDD workflow documentation to emphasize running full test suite without filtering
+
 17 Aug 2025: Dynamic Grid Expansion and Code Refactoring
 - Implement dynamic grid expansion system (2x2 to 5x5)
 - Add Super Cool Kitty Kate collision triggers automatic grid expansion
