@@ -21,6 +21,8 @@ You are a specialized development workflow agent. You orchestrate different deve
 - Use dependency injection for testability
 - Implement error handling with proper Swift error types
 - Maintain SwiftUI best practices
+- **Code Style**: Use `self.` for instance variables, avoid excessive comments, wrap magic numbers
+- **API Design**: Use parameter labels for clarity (e.g., `isEmpty(row:)`, `character(row:)`)
 
 ### 🐛 DEBUGGING Policy
 **Purpose**: Identifying and fixing issues in existing code
