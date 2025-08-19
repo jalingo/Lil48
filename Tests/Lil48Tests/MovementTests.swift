@@ -5,7 +5,7 @@ struct MovementTests {
     
     @Test("Single character moves right when space available")
     func singleCharacter_movesRight_slidesToRightmostPosition() throws {
-        var grid = GameGrid()
+        var grid = try GameGrid.createEmpty()
         let edge = grid.columns
         try grid.place(.coolKittyKate, at: GridPosition(row: 0, column: 0))
         
@@ -31,7 +31,7 @@ struct MovementTests {
     
     @Test("Multiple characters move together in same direction")
     func multipleCharacters_moveRight_allSlideTogetherUntilBlocked() throws {
-        var grid = GameGrid()
+        var grid = try GameGrid.createEmpty()
         let edge = grid.columns - 1
         try grid.place(.coolKittyKate, at: GridPosition(row: 0, column: 0))
         try grid.place(.bullyBob, at: GridPosition(row: 1, column: 0))
@@ -46,7 +46,7 @@ struct MovementTests {
     
     @Test("Character moves up when space available")
     func singleCharacter_movesUp_slidesToTopPosition() throws {
-        var grid = GameGrid()
+        var grid = try GameGrid.createEmpty()
         try grid.place(.coolKittyKate, at: GridPosition(row: 1, column: 0))
         
         let result = grid.move(direction: .up)
@@ -101,7 +101,7 @@ struct MovementTests {
     
     @Test("Newly promoted character cannot collide again in same move")
     func ckk_ckk_bb_moveRight_preventsDoubleMerge() throws {
-        var grid = GameGrid()
+        var grid = try GameGrid.createEmpty()
         try grid.place(.coolKittyKate, at: GridPosition(row: 0, column: 0))
         try grid.place(.coolKittyKate, at: GridPosition(row: 0, column: 1))
         try grid.place(.bullyBob, at: GridPosition(row: 0, column: 2))

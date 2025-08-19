@@ -10,3 +10,13 @@ extension GameGrid {
         return grid
     }
 }
+
+extension GameGridViewModel {
+    static func createEmpty() throws -> GameGridViewModel {
+        let viewModel = GameGridViewModel()
+        if let occupiedPosition = viewModel.occupiedPositions.first {
+            viewModel.removecharacter(row: occupiedPosition.row, column: occupiedPosition.column)
+        }
+        return viewModel
+    }
+}

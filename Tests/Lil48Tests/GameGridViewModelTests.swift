@@ -20,8 +20,8 @@ struct GameGridViewModelTests {
     // MARK: - Grid State Query Tests
     
     @Test("Empty grid reports all positions as empty")
-    func initialState_queryAllPositions_allReportEmpty() {
-        let viewModel = GameGridViewModel()
+    func initialState_queryAllPositions_allReportEmpty() throws {
+        let viewModel = try GameGridViewModel.createEmpty()
         
         #expect(viewModel.isEmpty(row: 0, column: 0) == true, "Top-left should be empty")
         #expect(viewModel.isEmpty(row: 0, column: 1) == true, "Top-right should be empty")
@@ -30,18 +30,13 @@ struct GameGridViewModelTests {
     }
     
     @Test("Empty grid returns nil for all character queries")
-    func initialState_queryAllPositionsForCharacters_allReturnNil() {
-        // Given - Newly created ViewModel with empty grid
-        // When - All valid positions are queried for characters
-        // Then - All positions should return nil
+    func initialState_queryAllPositionsForCharacters_allReturnNil() throws {
+        let viewModel = try GameGridViewModel.createEmpty()
         
-        let viewModel = GameGridViewModel()
-        
-        // These will FAIL because character retrieval behavior may not handle nil correctly
-        #expect(viewModel.character(row: 0, column: 0) == nil, "Top-left should have no character")
-        #expect(viewModel.character(row: 0, column: 1) == nil, "Top-right should have no character")
-        #expect(viewModel.character(row: 1, column: 0) == nil, "Bottom-left should have no character")
-        #expect(viewModel.character(row: 1, column: 1) == nil, "Bottom-right should have no character")
+        #expect(viewModel.character(row: 0, column: 0) == nil)
+        #expect(viewModel.character(row: 0, column: 1) == nil)
+        #expect(viewModel.character(row: 1, column: 0) == nil)
+        #expect(viewModel.character(row: 1, column: 1) == nil)
     }
     
     // MARK: - Character Placement Tests
@@ -224,13 +219,13 @@ struct GameGridViewModelTests {
     }
     
     @Test("Character placement with row too large fails gracefully")
-    func invalidPosition_rowTooLarge_placementFailsGracefully() {
-        let viewModel = GameGridViewModel()
+    func invalidPosition_rowTooLarge_placementFailsGracefully() throws {
+        let viewModel = try GameGridViewModel.createEmpty()
         let character = GameCharacter.coolKittyKate
         
         viewModel.placeCharacter(character, row: 3, column: 0)
 
-        #expect(viewModel.character(row: 0, column: 0) == nil, "Valid positions should remain unaffected")
+        #expect(viewModel.character(row: 0, column: 0) == nil)
     }
     
     @Test("Character placement with column too large fails gracefully")
@@ -324,36 +319,26 @@ struct GameGridViewModelTests {
     }
     
     @Test("ViewModel provides all empty positions for game logic")
-    func mixedState_emptyPositionsQueried_returnsAllEmptyCoordinates() {
-        // Given - ViewModel with some positions occupied
-        // When - All empty positions are requested
-        // Then - Should return array of all empty coordinates
-        
-        let viewModel = GameGridViewModel()
+    func mixedState_emptyPositionsQueried_returnsAllEmptyCoordinates() throws {
+        let viewModel = try GameGridViewModel.createEmpty()
         viewModel.placeCharacter(.coolKittyKate, row: 0, column: 0)
         
-        // This will PASS now that emptyPositions property is implemented
         let emptyPositions = viewModel.emptyPositions
         #expect(emptyPositions.count == (viewModel.rows * viewModel.columns) - 1)
-        #expect(emptyPositions.contains { $0.row == 0 && $0.column == 1 }, "Should include (0,1)")
-        #expect(emptyPositions.contains { $0.row == 1 && $0.column == 0 }, "Should include (1,0)")
+        #expect(emptyPositions.contains { $0.row == 0 && $0.column == 1 })
+        #expect(emptyPositions.contains { $0.row == 1 && $0.column == 0 })
         #expect(emptyPositions.contains { $0.row == 1 && $0.column == 1 }, "Should include (1,1)")
     }
     
     @Test("ViewModel provides occupied positions for game logic")
-    func mixedState_occupiedPositionsQueried_returnsAllOccupiedCoordinates() {
-        // Given - ViewModel with some positions occupied
-        // When - All occupied positions are requested
-        // Then - Should return array of all occupied coordinates with characters
-        
-        let viewModel = GameGridViewModel()
+    func mixedState_occupiedPositionsQueried_returnsAllOccupiedCoordinates() throws {
+        let viewModel = try GameGridViewModel.createEmpty()
         viewModel.placeCharacter(.coolKittyKate, row: 0, column: 0)
         viewModel.placeCharacter(.bullyBob, row: 1, column: 1)
         
-        // This will PASS now that occupiedPositions property is implemented
         let occupiedPositions = viewModel.occupiedPositions
-        #expect(occupiedPositions.count == 2, "Should have 2 occupied positions")
-        #expect(occupiedPositions.contains { $0.row == 0 && $0.column == 0 }, "Should include (0,0)")
+        #expect(occupiedPositions.count == 2)
+        #expect(occupiedPositions.contains { $0.row == 0 && $0.column == 0 })
         #expect(occupiedPositions.contains { $0.row == 1 && $0.column == 1 }, "Should include (1,1)")
     }
     
@@ -394,17 +379,12 @@ struct GameGridViewModelTests {
     }
     
     @Test("ViewModel provides total character count")
-    func mixedState_characterCountQueried_returnsCorrectTotal() {
-        // Given - ViewModel with some characters placed
-        // When - Total character count is requested
-        // Then - Should return accurate count
-        
-        let viewModel = GameGridViewModel()
+    func mixedState_characterCountQueried_returnsCorrectTotal() throws {
+        let viewModel = try GameGridViewModel.createEmpty()
         viewModel.placeCharacter(.coolKittyKate, row: 0, column: 0)
         viewModel.placeCharacter(.bullyBob, row: 1, column: 1)
         
-        // This will PASS now that characterCount property is implemented
-        #expect(viewModel.characterCount == 2, "Should count all placed characters")
+        #expect(viewModel.characterCount == 2)
     }
     
     @Test("ViewModel indicates when grid is full")
