@@ -51,7 +51,7 @@ struct GridCellView: View {
             .fill(character == nil ? Color.gray.opacity(0.3) : characterColor)
             .frame(width: 60, height: 60)
             .overlay {
-                if let character {
+                if character != nil {
                     Circle()
                         .fill(characterColor)
                         .frame(width: 40, height: 40)

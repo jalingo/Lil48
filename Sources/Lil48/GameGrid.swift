@@ -4,7 +4,7 @@ enum GridError: Error {
     case positionOutOfBounds
 }
 
-struct GridPosition: Equatable {
+struct GridPosition: Equatable, Hashable {
     let row: Int
     let column: Int
 }
@@ -37,6 +37,8 @@ struct GameGrid {
     private enum Constants {
         static let defaultSize = 4
         static let maxSize = 9
+        static let minSpawnChance = 0.7
+        static let maxSpawnChance = 1.0
     }
     
     private var tiles: [[GameCharacter?]]
@@ -251,17 +253,51 @@ struct GameGrid {
     
     mutating func spawnCharacter() -> Bool {
         let empty = emptyPositions
-        guard !empty.isEmpty else { return false }
+        guard let randomPosition = empty.randomElement() else { return false }
         
-        let randomPosition = empty[0]
-        tiles[randomPosition.row][randomPosition.column] = .coolKittyKate
+        tiles[randomPosition.row][randomPosition.column] = getSpawnCharacter()
         return true
     }
     
     func calculateSpawnChance() -> Double {
-        let baseChance = 0.2
-        let gridSizeMultiplier = Double(currentSize) / Double(Constants.defaultSize)
-        return min(baseChance * gridSizeMultiplier, 1.0)
+        guard self.characterCount > 0 else { return 0.0 }
+        
+        let gridFillRatio = Double(self.characterCount) / Double(self.rows * self.columns)
+        return max(Constants.minSpawnChance, Constants.maxSpawnChance - gridFillRatio)
+    }
+    
+    func getSpawnCharacter() -> GameCharacter {
+        let weights = getCharacterWeights()
+        let random = Double.random(in: 0...1)
+        
+        var cumulative = 0.0
+        for (character, weight) in weights {
+            cumulative += weight
+            if random <= cumulative {
+                return character
+            }
+        }
+        
+        return .coolKittyKate
+    }
+    
+    private func getCharacterWeights() -> [GameCharacter: Double] {
+        switch self.currentSize {
+        case 4:
+            return [.coolKittyKate: 1.0]
+        case 5:
+            return [.coolKittyKate: 0.9, .bullyBob: 0.1]
+        case 6:
+            return [.coolKittyKate: 0.8, .bullyBob: 0.15, .quickRick: 0.05]
+        case 7:
+            return [.coolKittyKate: 0.7, .bullyBob: 0.2, .quickRick: 0.08, .snifflingSteve: 0.02]
+        case 8:
+            return [.coolKittyKate: 0.6, .bullyBob: 0.25, .quickRick: 0.1, .snifflingSteve: 0.05]
+        case 9:
+            return [.coolKittyKate: 0.5, .bullyBob: 0.25, .quickRick: 0.15, .snifflingSteve: 0.08, .principalYavno: 0.02]
+        default:
+            return [.coolKittyKate: 1.0]
+        }
     }
     
     var characterCount: Int {

@@ -5,8 +5,8 @@ import Testing
 struct Lil48Tests {
     
     @Test("Library initializes successfully")
-    func initialization_succeeds() {
-        let game = Lil48()
+    func initialization_succeeds() throws {
+        _ = Lil48()
         // Test passes if no exception is thrown during initialization
     }
     

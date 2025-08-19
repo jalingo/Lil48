@@ -45,7 +45,6 @@ struct GridExpansionTests {
         let outOfRangeOffset = 2 // How many attempts past range to try
 
         for index in start..<maxSize + outOfRangeOffset {
-            print(" ## Index: \(index) Current: \(grid.currentSize)")
             let result = grid.expandGrid()
             #expect(result == (index < maxSize), "failed on \(index)")
         }
