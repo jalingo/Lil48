@@ -115,4 +115,22 @@ struct MovementTests {
         #expect(try grid.isEmpty(row: GridPosition(row: 0, column: 1)))
         #expect(try grid.isEmpty(row: GridPosition(row: 0, column: 0)))
     }
+    
+    
+    @Test("Reverse order prevents double merge - bb ckk ckk")
+    func bb_ckk_ckk_moveRight_preventsDoubleMerge() throws {
+        var grid = try GameGrid.createEmpty()
+        try grid.place(.bullyBob, at: GridPosition(row: 0, column: 0))
+        try grid.place(.coolKittyKate, at: GridPosition(row: 0, column: 1))
+        try grid.place(.coolKittyKate, at: GridPosition(row: 0, column: 2))
+        
+        let result = grid.move(direction: .right, allowSpawning: false)
+        
+        #expect(result == true)
+        // Should result in: [ ] [ ] BB BB (two separate Bully Bobs)
+        #expect(try grid.character(row: GridPosition(row: 0, column: 3)) == .bullyBob)
+        #expect(try grid.character(row: GridPosition(row: 0, column: 2)) == .bullyBob)
+        #expect(try grid.isEmpty(row: GridPosition(row: 0, column: 1)))
+        #expect(try grid.isEmpty(row: GridPosition(row: 0, column: 0)))
+    }
 }

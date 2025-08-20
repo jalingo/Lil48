@@ -114,13 +114,14 @@ struct GameGrid {
         var hasMovement = false
         var resultTiles = tiles
         var shouldExpandGrid = false
+        var mergedPositions = Set<GridPosition>()
         
         let positions = getAllPositions()
         let sortedPositions = sortPositionsForDirection(positions, direction: direction)
         
         for position in sortedPositions {
             if let character = tiles[position.row][position.column] {
-                let slideResult = slidePosition(from: position, direction: direction, in: resultTiles, currentCharacter: character)
+                let slideResult = slidePosition(from: position, direction: direction, in: resultTiles, currentCharacter: character, excludingMergedPositions: mergedPositions)
                 let newPos = slideResult.position
                 
                 if newPos.row != position.row || newPos.column != position.column {
@@ -132,8 +133,11 @@ struct GameGrid {
                     if promotionResult.shouldExpandGrid {
                         shouldExpandGrid = true
                     }
-                    if slideResult.shouldPromote, let promotedCharacter = character.nextCharacter {
-                        currentScore += promotedCharacter.pointValue
+                    if slideResult.shouldPromote {
+                        mergedPositions.insert(newPos)
+                        if let promotedCharacter = character.nextCharacter {
+                            currentScore += promotedCharacter.pointValue
+                        }
                     }
                 }
             }
@@ -192,7 +196,7 @@ struct GameGrid {
         }
     }
     
-    private func slidePosition(from position: GridPosition, direction: MovementDirection, in grid: [[GameCharacter?]], currentCharacter: GameCharacter) -> (position: GridPosition, shouldPromote: Bool, targetCharacter: GameCharacter?) {
+    private func slidePosition(from position: GridPosition, direction: MovementDirection, in grid: [[GameCharacter?]], currentCharacter: GameCharacter, excludingMergedPositions: Set<GridPosition> = []) -> (position: GridPosition, shouldPromote: Bool, targetCharacter: GameCharacter?) {
         var newRow = position.row
         var newColumn = position.column
         var shouldPromote = false
@@ -202,7 +206,7 @@ struct GameGrid {
         case .right:
             for col in (position.column + 1)..<columns {
                 if let obstacle = grid[position.row][col] {
-                    if obstacle == currentCharacter {
+                    if obstacle == currentCharacter && !excludingMergedPositions.contains(GridPosition(row: position.row, column: col)) {
                         shouldPromote = true
                         targetCharacter = obstacle
                         newColumn = col
@@ -215,7 +219,7 @@ struct GameGrid {
         case .left:
             for col in (0..<position.column).reversed() {
                 if let obstacle = grid[position.row][col] {
-                    if obstacle == currentCharacter {
+                    if obstacle == currentCharacter && !excludingMergedPositions.contains(GridPosition(row: position.row, column: col)) {
                         shouldPromote = true
                         targetCharacter = obstacle
                         newColumn = col
@@ -228,7 +232,7 @@ struct GameGrid {
         case .down:
             for row in (position.row + 1)..<rows {
                 if let obstacle = grid[row][position.column] {
-                    if obstacle == currentCharacter {
+                    if obstacle == currentCharacter && !excludingMergedPositions.contains(GridPosition(row: row, column: position.column)) {
                         shouldPromote = true
                         targetCharacter = obstacle
                         newRow = row
@@ -241,7 +245,7 @@ struct GameGrid {
         case .up:
             for row in (0..<position.row).reversed() {
                 if let obstacle = grid[row][position.column] {
-                    if obstacle == currentCharacter {
+                    if obstacle == currentCharacter && !excludingMergedPositions.contains(GridPosition(row: row, column: position.column)) {
                         shouldPromote = true
                         targetCharacter = obstacle
                         newRow = row
