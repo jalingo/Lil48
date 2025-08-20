@@ -29,6 +29,17 @@ swift run Lil48App
 
 ## Changes
 
+19 Aug 2025: Score Tracking System and Movement Bug Fixes  
+- Add complete score tracking system with character point values (Cool Kitty Kate: 2 → Super Cool Kitty Kate: 64)
+- Implement score calculation on character merges with proper accumulation across multiple moves
+- Add GameGridViewModel.score property exposing score to UI layer with real-time updates
+- Display prominent score in GameView UI with title2 bold font styling for visibility
+- Fix critical multiple collision bug where horizontal swipes allowed improper double merges (bb ckk ckk scenario)
+- Ensure consistent movement behavior across all swipe directions using merged position tracking
+- Add 7 comprehensive tests for score functionality with 81 total tests passing
+- Remove "Clear Grid" button from UI for cleaner, more focused interface design
+- Refactor character point values from static method to computed property for cleaner API
+
 19 Aug 2025: Victory/Game Over UI Notifications System
 - Add GameStateOverlay component with victory ("You Won!") and loss ("Game Over") messaging
 - Integrate overlay into GameView that completely replaces tile grid when game ends
