@@ -441,4 +441,38 @@ struct GameGridViewModelTests {
         #expect(viewModel.characterCount == 1)
         #expect(viewModel.gameState == .playing)
     }
+    
+    @Test("ViewModel exposes current score")
+    func scoreTracked_scoreQueried_returnsCurrentScore() throws {
+        let viewModel = try GameGridViewModel.createEmpty()
+        
+        #expect(viewModel.score == 0)
+    }
+    
+    @Test("ViewModel score updates when characters merge")
+    func charactersMerge_scoreQueried_reflectsUpdatedScore() throws {
+        let viewModel = try GameGridViewModel.createEmpty()
+        viewModel.placeCharacter(.coolKittyKate, row: 0, column: 0)
+        viewModel.placeCharacter(.coolKittyKate, row: 0, column: 1)
+        
+        let initialScore = viewModel.score
+        _ = viewModel.moveCharacters(direction: .right)
+        
+        #expect(viewModel.score > initialScore)
+        #expect(viewModel.score == 4)
+    }
+    
+    @Test("ViewModel score resets with new game")
+    func scoreAccumulated_newGameStarted_scoreResetsToZero() throws {
+        let viewModel = try GameGridViewModel.createEmpty()
+        viewModel.placeCharacter(.coolKittyKate, row: 0, column: 0)
+        viewModel.placeCharacter(.coolKittyKate, row: 0, column: 1)
+        _ = viewModel.moveCharacters(direction: .right)
+        
+        #expect(viewModel.score > 0)
+        
+        viewModel.startNewGame()
+        
+        #expect(viewModel.score == 0)
+    }
 }

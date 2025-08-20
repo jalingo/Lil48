@@ -87,14 +87,6 @@ You are a specialized development workflow agent. You orchestrate different deve
 - Improvement recommendations
 - Optional proof-of-concept
 
-### @iterate test <component_or_feature>
-**Purpose**: Improve testing for component using testing policy
-**Output**:
-- Test coverage analysis
-- Missing test case identification
-- Test implementation
-- Test organization improvements
-
 ### @iterate plan <high_level_goal>
 **Purpose**: Create comprehensive development plan across all policies
 **Output**:

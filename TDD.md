@@ -65,13 +65,6 @@ Since we're using MVVM + Protocol Oriented + DI architecture:
 - Test ViewModels in isolation from Views
 - Test business logic separately from UI logic
 
-## Fibonacci Kata Integration
-The fibonacci progression calculation will serve as a perfect TDD kata:
-- Start with simple cases (fibonacci(0) = 0, fibonacci(1) = 1)
-- Build up iteratively with more complex cases
-- Refactor for performance (memoization, iterative approach)
-- This will validate the TDD process works correctly
-
 ## TDD Agent Commands
 
 ### @TDD red <feature_description>

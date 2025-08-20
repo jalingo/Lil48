@@ -27,6 +27,17 @@ public enum GameCharacter {
         case .superCoolKittyKate: return nil
         }
     }
+    
+    var pointValue: Int {
+        switch self {
+        case .coolKittyKate: 2
+        case .bullyBob: 4
+        case .quickRick: 8
+        case .snifflingSteve: 16
+        case .principalYavno: 32
+        case .superCoolKittyKate: 64
+        }
+    }
 }
 
 public enum MovementDirection {
@@ -49,9 +60,11 @@ struct GameGrid {
     
     private var tiles: [[GameCharacter?]]
     private var currentSize: Int
+    private var currentScore: Int = 0
     
     var rows: Int { currentSize }
     var columns: Int { currentSize }
+    var score: Int { currentScore }
     
     init() {
         currentSize = Constants.defaultSize
@@ -118,6 +131,9 @@ struct GameGrid {
                     resultTiles[newPos.row][newPos.column] = promotionResult.finalCharacter
                     if promotionResult.shouldExpandGrid {
                         shouldExpandGrid = true
+                    }
+                    if slideResult.shouldPromote, let promotedCharacter = character.nextCharacter {
+                        currentScore += promotedCharacter.pointValue
                     }
                 }
             }

@@ -45,6 +45,13 @@ public struct GameView: View {
                         .font(.headline)
                     
                     HStack {
+                        Text("Score: \(viewModel.score)")
+                            .font(.title2)
+                            .fontWeight(.bold)
+                        Spacer()
+                    }
+                    
+                    HStack {
                         Text("Characters: \(viewModel.characterCount)")
                         Spacer()
                         Text("Empty: \(viewModel.emptyPositions.count)")
@@ -68,11 +75,6 @@ public struct GameView: View {
                         }
                         .buttonStyle(.bordered)
                     }
-                    
-                    Button("Clear Grid") {
-                        viewModel.clearGrid()
-                    }
-                    .buttonStyle(.bordered)
                 }
                 
                 Spacer()

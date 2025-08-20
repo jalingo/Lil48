@@ -122,6 +122,10 @@ public class GameGridViewModel {
         return gameGrid.gameState
     }
     
+    public var score: Int {
+        gameGrid.score
+    }
+    
     public func startNewGame() {
         gameGrid = GameGrid()
     }

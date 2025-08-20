@@ -135,4 +135,46 @@ struct GridFoundationTests {
         
         #expect(grid.gameState == .playing)
     }
+    
+    @Test("Score starts at zero for new grid")
+    func newGrid_scoreQueried_returnsZero() {
+        let grid = GameGrid()
+        
+        #expect(grid.score == 0)
+    }
+    
+    @Test("Character merge awards points equal to resulting character value")
+    func characterMerge_scoreCalculated_awardsPointsForResultingCharacter() throws {
+        var grid = try GameGrid.createEmpty()
+        try grid.place(.coolKittyKate, at: GridPosition(row: 0, column: 0))
+        try grid.place(.coolKittyKate, at: GridPosition(row: 0, column: 1))
+        
+        let initialScore = grid.score
+        _ = grid.move(direction: .right)
+        
+        #expect(grid.score == initialScore + 4)
+    }
+    
+    @Test("Multiple merges accumulate score correctly")
+    func multipleMerges_scoreCalculated_accumulatesCorrectly() throws {
+        var grid = try GameGrid.createEmpty()
+        try grid.place(.coolKittyKate, at: GridPosition(row: 0, column: 0))
+        try grid.place(.coolKittyKate, at: GridPosition(row: 0, column: 1))
+        try grid.place(.bullyBob, at: GridPosition(row: 1, column: 0))
+        try grid.place(.bullyBob, at: GridPosition(row: 1, column: 1))
+        
+        _ = grid.move(direction: .right)
+        
+        #expect(grid.score == 4 + 8)
+    }
+    
+    @Test("Score provides character point values")
+    func characterValues_queried_returnsCorrectPoints() {
+        #expect(GameCharacter.coolKittyKate.pointValue == 2)
+        #expect(GameCharacter.bullyBob.pointValue == 4)
+        #expect(GameCharacter.quickRick.pointValue == 8)
+        #expect(GameCharacter.snifflingSteve.pointValue == 16)
+        #expect(GameCharacter.principalYavno.pointValue == 32)
+        #expect(GameCharacter.superCoolKittyKate.pointValue == 64)
+    }
 }
